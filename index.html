@@ -30,15 +30,45 @@
 html,body{margin:0}
 body{background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 button,input,select,textarea{font:inherit;color:inherit}
-header{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
-.hwrap{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.logo{font-weight:700;font-size:16px;margin-right:auto}
+.shell{display:flex;min-height:100vh}
+.side{width:224px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:18px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;z-index:11}
+.logo{font-weight:700;font-size:16px;padding:0 10px 14px;cursor:pointer}
 .logo small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
-.tabs{display:flex;gap:4px;overflow-x:auto}
-.tab{border:0;background:none;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--muted);white-space:nowrap}
+.tabs{display:flex;flex-direction:column;gap:3px}
+.tab{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;padding:10px 12px;border-radius:8px;cursor:pointer;color:var(--muted);white-space:nowrap;font-size:14px}
+.tab .ic{width:18px;height:18px}
 .tab:hover{background:var(--surface-2);color:var(--text)}
 .tab.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
-main{max-width:1200px;margin:0 auto;padding:22px 24px 70px}
+.tab .ct{margin-left:auto;font-size:11px;font-weight:700;background:var(--bad);color:#fff;border-radius:999px;padding:0 7px}
+.side-foot{margin-top:auto;display:flex;flex-direction:column;gap:6px;padding:12px 4px 0;border-top:1px solid var(--border)}
+.side-foot .btn{justify-content:center}
+.content{flex:1;min-width:0}
+.topbar{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 28px;display:flex;align-items:center;gap:12px 20px;flex-wrap:wrap}
+main{max-width:1180px;padding:22px 28px 70px}
+/* countdown */
+.countdown{display:flex;align-items:center;gap:12px;flex:1 1 340px;min-width:0}
+.cd-num{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+.cd-num b{font-size:24px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+.cd-num span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.cd-side{flex:1;min-width:140px}
+.cd-side .bar{height:7px;margin:3px 0}
+.cd-text{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cd-text b{color:var(--text)}
+.cd-icon{width:34px;height:34px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex-shrink:0}
+.cd-icon .ic{width:18px;height:18px}
+/* currency converter */
+.fx{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 8px 6px 10px;margin-left:auto;max-width:470px}
+.fx input{width:74px;padding:5px 7px;border:1px solid var(--border);border-radius:6px;background:var(--bg);text-align:right;font-weight:600}
+.fx select{padding:5px 4px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-weight:600}
+.fx-out{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;min-width:92px;text-align:right;color:var(--accent)}
+.fx-live{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--good);text-transform:uppercase;letter-spacing:.05em}
+.fx-live .dot{width:7px;height:7px;border-radius:50%;background:var(--good);animation:pulse 2s infinite}
+.fx-live.off{color:var(--muted)} .fx-live.off .dot{background:var(--muted);animation:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(31,138,91,.5)}70%{box-shadow:0 0 0 6px rgba(31,138,91,0)}100%{box-shadow:0 0 0 0 rgba(31,138,91,0)}}
+.fx-meta{flex-basis:100%;font-size:11px;line-height:1.35;color:var(--muted);text-align:right}
+.fx-out.flash{animation:flash .6s}
+@keyframes flash{0%{opacity:.3}100%{opacity:1}}
+@media (prefers-reduced-motion: reduce){.fx-live .dot{animation:none}.fx-out.flash{animation:none}}
 .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
 .head h1{font-size:22px;margin:0 auto 0 0}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;white-space:nowrap}
@@ -52,7 +82,7 @@ main{max-width:1200px;margin:0 auto;padding:22px 24px 70px}
 .icon-btn svg{width:16px;height:16px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow)}
 .pad{padding:16px}
-.months{display:flex;gap:4px;overflow-x:auto;margin-bottom:16px;padding-bottom:2px}
+.months{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
 .mchip{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:5px 12px;cursor:pointer;font-size:13px;white-space:nowrap}
 .mchip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-text);font-weight:600}
 .mchip.now:not(.on){border-color:var(--accent);color:var(--accent)}
@@ -82,10 +112,48 @@ main{max-width:1200px;margin:0 auto;padding:22px 24px 70px}
 .ic-wallet{--src:url(icons/wallet.svg)}
 .ic-trending-down{--src:url(icons/trending-down.svg)}
 .ic-arrow-right{--src:url(icons/arrow-right.svg)}
+.ic-layout-dashboard{--src:url(icons/layout-dashboard.svg)}
+.ic-badge-check{--src:url(icons/badge-check.svg)}
+.ic-arrow-left-right{--src:url(icons/arrow-left-right.svg)}
+.ic-refresh-cw{--src:url(icons/refresh-cw.svg)}
+.ic-external-link{--src:url(icons/external-link.svg)}
+.ic-hourglass{--src:url(icons/hourglass.svg)}
+.ic-trophy{--src:url(icons/trophy.svg)}
+.ic-clock{--src:url(icons/clock.svg)}
+.ic-circle-alert{--src:url(icons/circle-alert.svg)}
 .pos{color:var(--good)} .neg{color:var(--bad)}
 .backbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.hdr-acts{display:flex;gap:6px}
-@media (max-width:760px){.hdr-acts{width:100%}.hdr-acts .btn{flex:1;justify-content:center}}
+.ysel{padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-weight:700;font-size:15px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.kpi{padding:14px 16px}
+.kpi .lbl{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.kpi .num{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums;margin:2px 0}
+.kpi .sub{color:var(--muted);font-size:12px}
+.kpi.hi{border-color:var(--accent)}
+.dash-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+.legend{display:flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;font-weight:500}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:6px}
+.lg-inc,.b-inc{background:var(--blue)} .lg-exp,.b-exp{background:var(--accent)}
+.chart{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;height:220px;align-items:end;margin-top:10px}
+.chart .col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;border:0;background:none;cursor:pointer;padding:4px 0;border-radius:8px;gap:3px}
+.chart .col:hover,.chart .col.cur{background:var(--surface-2)}
+.chart .bars{display:flex;align-items:flex-end;gap:2px;height:150px;width:100%;justify-content:center}
+.chart .bars span{width:38%;max-width:14px;border-radius:3px 3px 0 0;min-height:2px;transition:height .5s}
+.chart .b-inc{opacity:.55}
+.c-left{font-size:11px;font-weight:700;color:var(--good);font-variant-numeric:tabular-nums}
+.c-m{font-size:11px;color:var(--muted)}
+.mini-tbl th,.mini-tbl td{padding:7px 8px}
+.hbar{margin-bottom:8px}
+.hb-top{display:flex;justify-content:space-between;font-size:13px;gap:8px}
+.hbar .bar{height:6px;margin-top:3px}
+.link{cursor:pointer;color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.tag.late{background:var(--bad-soft);color:var(--bad)}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.pill.good{background:var(--accent-soft);color:var(--accent)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.bad{background:var(--bad-soft);color:var(--bad)}
+.cut-head h2 .ic{color:var(--warn)}
+@media (max-width:980px){.dash-grid{grid-template-columns:1fr}}
+@media (max-width:560px){.chart{gap:2px}.c-left{font-size:9px}}
+
 .summary{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:8px 14px;padding:18px 20px;margin-bottom:18px}
 .summary .lbl{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
 .summary .big{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -147,6 +215,7 @@ main{max-width:1200px;margin:0 auto;padding:22px 24px 70px}
 .line .nm{flex:1;min-width:0}
 .line .nm small{display:block;color:var(--muted);font-size:12px}
 .line .amt{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.line.overdue{background:linear-gradient(90deg,var(--bad-soft),transparent 70%)}
 .line.paid .nm,.line.paid .amt{color:var(--muted);text-decoration:line-through}
 .line input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
 .line .act{display:flex;opacity:.55}
@@ -197,8 +266,19 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
 .mact{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.show{opacity:1}
+@media (max-width:860px){
+  .shell{flex-direction:column}
+  .side{width:auto;height:auto;flex-direction:row;align-items:center;padding:8px 12px;border-right:0;border-bottom:1px solid var(--border);overflow-x:auto;gap:6px}
+  .logo{display:none}
+  .tabs{flex-direction:row}
+  .tab{width:auto;padding:8px 10px}
+  .side-foot{margin:0 0 0 auto;flex-direction:row;border:0;padding:0}
+  .topbar{position:static;padding:10px 16px}
+  .fx{margin-left:0;width:100%}
+  .fx-meta{text-align:left}
+}
 @media (max-width:760px){
-  .hwrap{padding:10px 16px} main{padding:16px 16px 70px}
+  main{padding:16px 16px 70px}
   .cut-grid,.two{grid-template-columns:1fr}
   .fgrid{grid-template-columns:1fr}
   .stat .num{font-size:19px}
@@ -206,12 +286,32 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
 </style>
 </head>
 <body>
-<header><div class="hwrap">
-  <div class="logo" data-act="home" style="cursor:pointer" title="Go to this month">Cio Budget Planner<small>Income vs expenses · 15th &amp; 30th cutoffs</small></div>
-  <nav class="tabs" id="tabs"></nav>
-  <div class="hdr-acts"><button class="btn sm primary" data-act="import" title="Load your starter or backup .json file"><i class="ic ic-folder-open" aria-hidden="true"></i> Import file</button><button class="btn sm" data-act="export" title="Download a backup .json file"><i class="ic ic-save" aria-hidden="true"></i> Backup</button></div>
-</div></header>
-<main id="main"></main>
+<div class="shell">
+<aside class="side">
+  <div class="logo" data-act="dashhome" title="Go to dashboard">Cio Budget Planner<small>Income vs expenses · 15th &amp; 30th</small></div>
+  <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+  <div class="side-foot">
+    <button class="btn sm primary" data-act="import" title="Load your starter or backup .json file"><i class="ic ic-folder-open" aria-hidden="true"></i> Import file</button>
+    <button class="btn sm" data-act="export" title="Download a backup .json file"><i class="ic ic-save" aria-hidden="true"></i> Backup</button>
+  </div>
+</aside>
+<div class="content">
+  <div class="topbar">
+    <div id="countdown" class="countdown"></div>
+    <div class="fx" id="fx">
+      <span class="fx-live" title="Live rate"><span class="dot"></span>Live</span>
+      <input id="fx-amt" inputmode="decimal" value="1" aria-label="Amount to convert">
+      <select id="fx-from" aria-label="From currency"></select>
+      <button class="icon-btn" id="fx-swap" title="Swap currencies"><i class="ic ic-arrow-left-right" aria-hidden="true"></i></button>
+      <select id="fx-to" aria-label="To currency"></select>
+      <span class="fx-out" id="fx-out">…</span>
+      <a class="icon-btn" id="fx-google" target="_blank" rel="noopener" title="Check this rate on Google"><i class="ic ic-external-link" aria-hidden="true"></i></a>
+      <div class="fx-meta" id="fx-meta"></div>
+    </div>
+  </div>
+  <main id="main"></main>
+</div>
+</div>
 <div id="modal-root"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="import-file" accept=".json,application/json" hidden>
@@ -242,7 +342,33 @@ function load(){
   try { const raw = localStorage.getItem(KEY); if (raw) data = Object.assign(data, JSON.parse(raw)); }
   catch(e){ storageOK = false; }
   data.paid ||= {}; data.settings ||= {currency:'₱'}; CUR = data.settings.currency || '₱';
+  if (!data.settings.trackFrom && (data.bills.length || data.incomes.length)){ data.settings.trackFrom = ymNow(); persist(); }
 }
+/* Months before trackFrom were already paid (history from the sheet); from trackFrom on, ticks decide. */
+const trackFrom = () => data.settings.trackFrom || ymNow();
+function isPaid(b, ym){
+  const v = data.paid[b.id + '|' + ym];
+  if (v === true) return true;
+  if (v === false) return false;
+  return idx(ym) < idx(trackFrom());
+}
+function instStatus(b){
+  const n = num(b.months), now = ymNow(), pays = [];
+  for (let k = 1; k <= n; k++){
+    const ym = ymAdd(b.start, k-1), amt = (k === n && num(b.final) > 0) ? num(b.final) : num(b.amount);
+    pays.push({k, ym, amt, paid:isPaid(b, ym)});
+  }
+  const paid = pays.filter(p => p.paid), total = sum(pays, p => p.amt), paidAmt = sum(paid, p => p.amt);
+  const expected = pays.filter(p => idx(p.ym) < idx(now)).length;
+  const overdue = pays.filter(p => idx(p.ym) < idx(now) && !p.paid);
+  const dueNow = pays.find(p => p.ym === now && !p.paid);
+  const unpaid = pays.filter(p => !p.paid);
+  return {n, pays, paidN:paid.length, paidAmt, total, price:num(b.price) || total, remaining:total - paidAmt,
+    expected, overdue, dueNow, firstYm:pays[0]?.ym, lastYm:pays[n-1]?.ym,
+    firstPaid:paid[0]?.ym, lastPaid:paid[paid.length-1]?.ym, lastUnpaid:unpaid[unpaid.length-1]?.ym, done: n > 0 && paid.length === n};
+}
+const installments = () => data.bills.filter(b => b.kind === 'installment' && b.start && num(b.months));
+const cutDay = (ym, c) => { const [y,m] = ym.split('-').map(Number); return c === '15th' ? 15 : Math.min(30, new Date(y, m, 0).getDate()); };
 function persist(){ try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){ storageOK = false; } }
 
 /* ---------- schemas ---------- */
@@ -318,7 +444,7 @@ function cutoff(ym, c){
   const pct = al.filter(a => a.mode === 'pct').map(a => ({a, amt:Math.round(rest * num(a.value) / 100)}));
   const allocs = [...fixed, ...pct];
   const allocT = sum(allocs, r => r.amt);
-  const paidN = bills.filter(r => data.paid[r.b.id + '|' + ym]).length;
+  const paidN = bills.filter(r => isPaid(r.b, ym)).length;
   return {salary, shares, bills, incomeT, shareT, billT, youPay, left, allocs, allocT, unalloc:left - allocT, paidN};
 }
 function month(ym){
@@ -330,13 +456,14 @@ function month(ym){
 const bucketNames = () => [...new Set(data.allocs.map(a => a.name))];
 
 /* ---------- UI state ---------- */
-const ui = {view:'month', ym:ymNow(), year:Number(ymNow().slice(0,4)), billFilter:'all', billCut:'all'};
-const VIEWS = [['month','Monthly','calendar-days'],['year','Yearly','calendar-range'],['bills','Expenses','receipt'],['income','Income & Savings','wallet']];
+const ui = {view:'dash', ym:ymNow(), year:Number(ymNow().slice(0,4)), billFilter:'all', billCut:'all'};
+const VIEWS = [['dash','Dashboard','layout-dashboard'],['month','Monthly','calendar-days'],['bills','Expenses','receipt'],['paid','Paid','badge-check'],['income','Income & Savings','wallet']];
 function renderTabs(){
-  $('#tabs').innerHTML = VIEWS.map(([k,l,i]) => `<button class="tab ${ui.view===k?'on':''}" data-act="view" data-v="${k}">${ic(i)} ${l}</button>`).join('');
+  const overdue = installments().reduce((n, b) => n + instStatus(b).overdue.length, 0);
+  $('#tabs').innerHTML = VIEWS.map(([k,l,i]) => `<button class="tab ${ui.view===k?'on':''}" data-act="view" data-v="${k}">${ic(i)} ${l}${k==='paid'&&overdue?`<span class="ct" title="Overdue installment payments">${overdue}</span>`:''}</button>`).join('');
 }
 /* ---------- navigation history ---------- */
-const routeOf = () => ui.view==='month' ? 'month/'+ui.ym : ui.view==='year' ? 'year/'+ui.year : ui.view;
+const routeOf = () => ui.view==='month' ? 'month/'+ui.ym : ui.view==='dash' ? 'dash/'+ui.year : ui.view;
 function go(change){
   const before = routeOf(); Object.assign(ui, change);
   if (routeOf() !== before){ try { history.pushState(null, '', '#' + routeOf()); navDepth++; } catch(e){} }
@@ -345,16 +472,16 @@ function go(change){
 function readRoute(){
   const [v, arg] = (location.hash.slice(1) || '').split('/');
   if (v === 'month' && /^\d{4}-\d{2}$/.test(arg||'')){ ui.view = 'month'; ui.ym = arg; }
-  else if (v === 'year' && /^\d{4}$/.test(arg||'')){ ui.view = 'year'; ui.year = Number(arg); }
-  else if (v === 'bills' || v === 'income'){ ui.view = v; }
-  else { ui.view = 'month'; ui.ym = ymNow(); }
+  else if ((v === 'dash' || v === 'year') && /^\d{4}$/.test(arg||'')){ ui.view = 'dash'; ui.year = Number(arg); }
+  else if (v === 'bills' || v === 'income' || v === 'paid'){ ui.view = v; }
+  else { ui.view = 'dash'; ui.year = Number(ymNow().slice(0,4)); }
 }
 window.addEventListener('popstate', () => { readRoute(); closeModal(); render(); });
 let navDepth = 0;
 window.addEventListener('popstate', () => { if (navDepth > 0) navDepth--; });
 function backBar(){
-  const atHome = ui.view === 'month' && ui.ym === ymNow();
-  if (atHome) return '';
+  const atHome = (ui.view === 'month' && ui.ym === ymNow()) || (ui.view === 'dash' && ui.year === Number(ymNow().slice(0,4)));
+  if (atHome || navDepth === 0 && ui.view !== 'month') return '';
   return `<div class="backbar"><button class="btn" data-act="back">${ic('arrow-left')} Back</button><button class="btn" data-act="home">${ic('house')} This month (${ymLabel(ymNow(), true)})</button></div>`;
 }
 
@@ -362,8 +489,9 @@ function render(){
   renderTabs();
   let h = storageOK ? '' : `<div class="warn">Your browser is blocking storage here, so changes won't be kept after you close the page. Open it from your website in Chrome to save normally.</div>`;
   if (!data.incomes.length && !data.bills.length) h += welcome();
-  else h += backBar() + ({month:viewMonth, year:viewYear, bills:viewBills, income:viewIncome})[ui.view]();
+  else h += backBar() + ({dash:viewDash, month:viewMonth, bills:viewBills, paid:viewPaid, income:viewIncome})[ui.view]();
   $('#main').innerHTML = h;
+  renderCountdown();
   afterRender();
 }
 function welcome(){
@@ -383,7 +511,7 @@ function monthChips(){
   const y = Number(ui.ym.slice(0,4)), now = ymNow();
   return `<div class="months">
     <button class="mchip" data-act="ym" data-v="${ymAdd(ui.ym,-12)}">${ic('chevron-left')} ${y-1}</button>
-    ${MONTHS.map((m,i) => { const ym = y + '-' + pad(i+1); return `<button class="mchip ${ym===ui.ym?'on':''} ${ym===now?'now':''}" data-act="ym" data-v="${ym}">${m.slice(0,3)}</button>`; }).join('')}
+    ${MONTHS.map((m,i) => { const ym = y + '-' + pad(i+1); return `<button class="mchip ${ym===ui.ym?'on':''} ${ym===now?'now':''}" data-act="ym" data-v="${ym}">${m}</button>`; }).join('')}
     <button class="mchip" data-act="ym" data-v="${ymAdd(ui.ym,12)}">${y+1} ${ic('chevron-right')}</button></div>`;
 }
 function viewMonth(){
@@ -406,7 +534,6 @@ function viewMonth(){
       </tbody></table>
     </div>
     ${quickAdd(ym)}
-    ${debtCard()}
     ${data.allocs.length ? `<div class="stats">${bucketStats}<div class="card stat"><div class="lbl">Free / unallocated</div><div class="num ${M.unalloc<0?'neg':''}">${money(M.unalloc)}</div></div></div>` : ''}
     <div class="cut-grid">${cutCard(ym,'15th',M.a)}${cutCard(ym,'30th',M.b)}</div>${footer()}`;
 }
@@ -416,12 +543,13 @@ function rowActs(store, id){
 function cutCard(ym, c, C){
   const pctPaid = C.bills.length ? Math.round(C.paidN / C.bills.length * 100) : 0;
   const billLine = r => {
-    const b = r.b, paid = !!data.paid[b.id + '|' + ym];
+    const b = r.b, paid = isPaid(b, ym);
+    const overdueMark = !paid && idx(ym) < idx(ymNow());
     let tag = '';
     if (b.kind === 'installment') tag = `<span class="tag inst">${r.k} of ${r.n}</span>${r.k===r.n?'<span class="tag last">last payment</span>':''}`;
     else if (b.kind === 'once') tag = '<span class="tag">one-time</span>';
     const sub = [b.due && 'due ' + b.due, b.account, b.kind==='installment' && r.k < r.n && 'ends ' + ymLabel(ymAdd(b.start, r.n-1), true)].filter(Boolean).join(' · ');
-    return `<div class="line ${paid?'paid':''}"><input type="checkbox" data-paid="${b.id}|${ym}" ${paid?'checked':''} title="Mark as paid"><div class="nm">${esc(b.name)}${tag}${sub?`<small>${esc(sub)}</small>`:''}</div><div class="amt editable" data-edit="bills|${b.id}" title="Tap to change amount">${money(r.amt)}</div>${rowActs('bills', b.id)}</div>`;
+    return `<div class="line ${paid?'paid':''} ${overdueMark?'overdue':''}"><input type="checkbox" data-paid="${b.id}|${ym}" ${paid?'checked':''} title="Mark as paid"><div class="nm">${esc(b.name)}${tag}${sub?`<small>${esc(sub)}</small>`:''}</div><div class="amt editable" data-edit="bills|${b.id}" title="Tap to change amount">${money(r.amt)}</div>${rowActs('bills', b.id)}</div>`;
   };
   return `<div class="card">
     <div class="cut-head"><h2>${c} cutoff</h2><span class="badge">${C.paidN}/${C.bills.length} paid</span></div>
@@ -445,46 +573,150 @@ function cutCard(ym, c, C){
     </div></div>`;
 }
 
-/* ---------- Yearly view ---------- */
-function viewYear(){
-  const y = ui.year, names = bucketNames(), now = ymNow();
-  const rows = MONTHS.map((m,i) => { const ym = y + '-' + pad(i+1); return {ym, M:month(ym)}; });
-  const maxLeft = Math.max(1, ...rows.map(r => Math.abs(r.M.left)));
-  const T = {income:sum(rows,r=>r.M.income), youPay:sum(rows,r=>r.M.youPay), left:sum(rows,r=>r.M.left), unalloc:sum(rows,r=>r.M.unalloc)};
-  names.forEach(n => T[n] = sum(rows, r => r.M.buckets[n]||0));
-  // installments overview
-  const inst = data.bills.filter(b => b.kind === 'installment' && b.start && num(b.months)).map(b => {
-    const n = num(b.months), endYm = ymAdd(b.start, n-1);
-    let remaining = 0, left = 0;
-    for (let k = 1; k <= n; k++){
-      const ym = ymAdd(b.start, k-1);
-      if (idx(ym) > idx(now) || (ym === now && !data.paid[b.id+'|'+ym])){ remaining += (k===n && num(b.final)>0) ? num(b.final) : num(b.amount); left++; }
-    }
-    return {b, endYm, remaining, left, n};
-  }).filter(r => r.left > 0).sort((a,b) => idx(a.endYm) - idx(b.endYm));
-  const debtFree = inst.length ? inst[inst.length-1].endYm : null;
-  return `<div class="head"><h1>${y} overview</h1>
-      <button class="btn" data-act="year" data-v="${y-1}">${ic('chevron-left')} ${y-1}</button><button class="btn" data-act="year" data-v="${y+1}">${y+1} ${ic('chevron-right')}</button></div>
-    <div class="stats">
-      <div class="card stat"><div class="lbl">Income ${y}</div><div class="num">${money(T.income)}</div></div>
-      <div class="card stat"><div class="lbl">Total expenses</div><div class="num">${money(T.youPay)}</div></div>
-      <div class="card stat"><div class="lbl">Total left</div><div class="num ${T.left<0?'neg':'pos'}">${money(T.left)}</div></div>
-      ${names.map(n => `<div class="card stat"><div class="lbl">${esc(n)}</div><div class="num">${money(T[n])}</div><div class="sub">for the year</div></div>`).join('')}
+/* ---------- Debt-free countdown (top bar) ---------- */
+function debtInfo(){
+  let total = 0, paid = 0, last = null, lastBill = null, payLeft = 0;
+  installments().forEach(b => {
+    const st = instStatus(b);
+    total += st.total; paid += st.paidAmt;
+    st.pays.forEach(p => { if (!p.paid){ payLeft++; const d = new Date(+p.ym.slice(0,4), +p.ym.slice(5)-1, cutDay(p.ym, b.cutoff)); if (!last || d > last){ last = d; lastBill = b; } } });
+  });
+  return {total, paid, owed: total - paid, last, lastBill, payLeft, pct: total ? Math.round(paid / total * 100) : 100};
+}
+function renderCountdown(){
+  const el = $('#countdown'); if (!el) return;
+  if (!data.bills.length){ el.innerHTML = ''; return; }
+  const D = debtInfo();
+  if (!D.last){ el.innerHTML = `<div class="cd-icon">${ic('trophy')}</div><div class="cd-side"><div class="cd-num"><b>Debt-free!</b></div><div class="cd-text">All installments are fully paid. Amazing.</div></div>`; return; }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days = Math.max(0, Math.ceil((D.last - today) / 86400000));
+  const mos = (D.last.getFullYear() - today.getFullYear()) * 12 + D.last.getMonth() - today.getMonth();
+  const human = mos >= 12 ? `${Math.floor(mos/12)} yr${mos>=24?'s':''}${mos%12?` ${mos%12} mo${mos%12>1?'s':''}`:''}` : `${mos} mo${mos!==1?'s':''}`;
+  el.innerHTML = `<div class="cd-icon">${ic('hourglass')}</div>
+    <div class="cd-num"><b data-count="cd" data-to="${days}">${days.toLocaleString()}</b><span>days to<br>debt-free</span></div>
+    <div class="cd-side"><div class="cd-text"><b>${D.pct}% paid</b> · ${money(D.owed)} to go · ${D.payLeft} payments · done by <b>${D.last.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</b> (~${human})</div>
+    <div class="bar"><span style="width:${D.pct}%"></span></div></div>`;
+}
+
+/* ---------- Dashboard (year summary) ---------- */
+function yearsRange(){
+  let min = Number(ymNow().slice(0,4)), max = min;
+  const upd = ym => { if (!ym) return; const y = Number(ym.slice(0,4)); if (y){ min = Math.min(min, y); max = Math.max(max, y); } };
+  data.bills.forEach(b => { upd(b.start); upd(b.month); upd(b.end); if (b.kind === 'installment' && b.start && num(b.months)) upd(ymAdd(b.start, num(b.months)-1)); });
+  data.incomes.forEach(x => { upd(x.start); upd(x.month); upd(x.end); });
+  return [min, max];
+}
+function viewDash(){
+  const y = ui.year, now = ymNow(), [ymin, ymax] = yearsRange();
+  const rows = MONTHS.map((m,i) => { const ym = y + '-' + pad(i+1); return {ym, m, M:month(ym)}; });
+  const T = {income:sum(rows,r=>r.M.income), exp:sum(rows,r=>r.M.youPay), bills:sum(rows,r=>r.M.bills), left:sum(rows,r=>r.M.left)};
+  const cut = c => ({inc:sum(rows,r=>r.M[c].incomeT), exp:sum(rows,r=>r.M[c].youPay), left:sum(rows,r=>r.M[c].left)});
+  const A = cut('a'), B = cut('b');
+  // paid / unpaid amounts this year
+  let paidAmt = 0, unpaidAmt = 0, overdueAmt = 0;
+  const perBill = {};
+  rows.forEach(r => [...r.M.a.bills, ...r.M.b.bills].forEach(x => {
+    perBill[x.b.id] = (perBill[x.b.id] || 0) + x.amt;
+    if (isPaid(x.b, r.ym)) paidAmt += x.amt; else { unpaidAmt += x.amt; if (idx(r.ym) < idx(now)) overdueAmt += x.amt; }
+  }));
+  const top = Object.entries(perBill).map(([id, amt]) => ({b:data.bills.find(x => x.id === id), amt})).filter(x => x.b).sort((a,b) => b.amt - a.amt).slice(0,6);
+  const topMax = top[0]?.amt || 1;
+  const inst = installments().map(b => ({b, st:instStatus(b)}));
+  const finishing = inst.filter(r => r.st.lastYm && r.st.lastYm.startsWith(y + '-')).sort((a,b) => idx(a.st.lastYm) - idx(b.st.lastYm));
+  const owedEnd = sum(inst, r => sum(r.st.pays.filter(p => idx(p.ym) > idx(y + '-12')), p => p.amt));
+  const maxBar = Math.max(1, ...rows.map(r => Math.max(r.M.income, r.M.youPay)));
+  const pctPaid = (paidAmt + unpaidAmt) ? Math.round(paidAmt / (paidAmt + unpaidAmt) * 100) : 0;
+  const years = []; for (let i = ymin; i <= ymax; i++) years.push(i);
+  return `<div class="head"><h1>${y} dashboard</h1>
+      <button class="btn" data-act="year" data-v="${y-1}" title="Previous year">${ic('chevron-left')}</button>
+      <select id="ysel" class="ysel" aria-label="Select year">${years.map(v => `<option ${v===y?'selected':''}>${v}</option>`).join('')}${years.includes(y)?'':`<option selected>${y}</option>`}</select>
+      <button class="btn" data-act="year" data-v="${y+1}" title="Next year">${ic('chevron-right')}</button>
+      <button class="btn primary" data-act="goto" data-v="${now}">${ic('calendar-days')} Open this month</button></div>
+    <div class="kpis">
+      <div class="card kpi"><div class="lbl">Total income</div><div class="num" data-count="d-inc" data-to="${T.income}">${money(T.income)}</div><div class="sub">avg ${money(Math.round(T.income/12))}/month</div></div>
+      <div class="card kpi"><div class="lbl">Total expenses</div><div class="num" data-count="d-exp" data-to="${T.exp}">${money(T.exp)}</div><div class="sub">${T.bills!==T.exp?`${money(T.bills)} bills − ${money(T.bills-T.exp)} shared`:'your share of bills'}</div></div>
+      <div class="card kpi hi"><div class="lbl">Total left</div><div class="num ${T.left<0?'neg':'pos'}" data-count="d-left" data-to="${T.left}">${money(T.left)}</div><div class="sub">avg ${money(Math.round(T.left/12))}/month</div></div>
+      <div class="card kpi"><div class="lbl">Bills paid in ${y}</div><div class="num">${pctPaid}%</div><div class="bar"><span style="width:${pctPaid}%"></span></div><div class="sub">${money(paidAmt)} paid · ${money(unpaidAmt)} to go${overdueAmt?` · <span class="neg">${money(overdueAmt)} overdue</span>`:''}</div></div>
     </div>
-    <div class="card" style="margin-bottom:18px"><div class="tbl-wrap"><table>
-      <thead><tr><th>Month</th><th class="num">Income</th><th class="num">Expenses</th><th class="num">Left</th>${names.map(n=>`<th class="num">${esc(n)}</th>`).join('')}${names.length?'<th class="num">Free</th>':''}</tr></thead>
-      <tbody>${rows.map(r => `<tr class="click ${r.ym===now?'cur':''}" data-act="goto" data-v="${r.ym}">
-        <td>${MONTHS[Number(r.ym.slice(5))-1]}</td><td class="num">${money(r.M.income)}</td><td class="num">${money(r.M.youPay)}</td>
-        <td class="num"><span class="${r.M.left<0?'neg':''}">${money(r.M.left)}</span><span class="mini-bar ${r.M.left<0?'neg':''}" style="width:${Math.round(Math.abs(r.M.left)/maxLeft*60)}px"></span></td>
-        ${names.map(n=>`<td class="num">${money(r.M.buckets[n]||0)}</td>`).join('')}
-        ${names.length?`<td class="num ${r.M.unalloc<0?'neg':''}">${money(r.M.unalloc)}</td>`:''}</tr>`).join('')}
-        <tr class="total"><td>Total</td><td class="num">${money(T.income)}</td><td class="num">${money(T.youPay)}</td><td class="num">${money(T.left)}</td>${names.map(n=>`<td class="num">${money(T[n])}</td>`).join('')}${names.length?`<td class="num">${money(T.unalloc)}</td>`:''}</tr>
-      </tbody></table></div></div>
-    <div class="card"><div class="cut-head"><h2>Installments still running</h2>${debtFree?`<span class="badge">All paid off by ${ymLabel(debtFree)}</span>`:''}</div>
-      ${inst.length ? `<div class="tbl-wrap"><table><thead><tr><th>Expense</th><th>Cutoff</th><th class="num">Per payment</th><th class="num">Payments left</th><th class="num">Remaining</th><th>Last payment</th></tr></thead><tbody>
-      ${inst.map(r => `<tr><td><b>${esc(r.b.name)}</b>${r.b.account?`<div class="sub">${esc(r.b.account)}</div>`:''}</td><td>${r.b.cutoff}</td><td class="num">${money(num(r.b.amount))}</td><td class="num">${r.left} of ${r.n}</td><td class="num"><b>${money(r.remaining)}</b></td><td>${ymLabel(r.endYm,true)}</td></tr>`).join('')}
-      <tr class="total"><td colspan="4">Total still owed</td><td class="num">${money(sum(inst,r=>r.remaining))}</td><td></td></tr></tbody></table></div>` : '<div class="pad empty">No running installments.</div>'}
+    <div class="dash-grid">
+      <div class="card pad chart-card"><div class="sec-t">Income vs expenses per month <span class="legend"><i class="lg-inc"></i>Income <i class="lg-exp"></i>Expenses</span></div>
+        <div class="chart">${rows.map(r => `<button class="col ${r.ym===now?'cur':''}" data-act="goto" data-v="${r.ym}" title="${r.m}: income ${money(r.M.income)}, expenses ${money(r.M.youPay)}, left ${money(r.M.left)}">
+          <span class="bars"><span class="b-inc" style="height:${r.M.income/maxBar*100}%"></span><span class="b-exp" style="height:${r.M.youPay/maxBar*100}%"></span></span>
+          <span class="c-left ${r.M.left<0?'neg':''}">${Math.abs(r.M.left)>=1000?(r.M.left<0?'−':'')+Math.round(Math.abs(r.M.left)/1000)+'k':money(r.M.left)}</span>
+          <span class="c-m">${r.m.slice(0,3)}</span></button>`).join('')}</div>
+        <p class="note">Tap a month to open it. The number above each month is what's left.</p></div>
+      <div class="card pad"><div class="sec-t">15th vs 30th cutoff</div>
+        <table class="mini-tbl"><thead><tr><th></th><th class="num">Income</th><th class="num">Expenses</th><th class="num">Left</th></tr></thead><tbody>
+          <tr><td>15th</td><td class="num">${money(A.inc)}</td><td class="num">${money(A.exp)}</td><td class="num ${A.left<0?'neg':''}"><b>${money(A.left)}</b></td></tr>
+          <tr><td>30th</td><td class="num">${money(B.inc)}</td><td class="num">${money(B.exp)}</td><td class="num ${B.left<0?'neg':''}"><b>${money(B.left)}</b></td></tr>
+        </tbody></table>
+        <div class="sec-t" style="margin-top:18px">Biggest expenses in ${y}</div>
+        ${top.length ? top.map(t => `<div class="hbar"><div class="hb-top"><span>${esc(t.b.name)}</span><b>${money(t.amt)}</b></div><div class="bar"><span style="width:${t.amt/topMax*100}%"></span></div></div>`).join('') : '<div class="empty">No expenses this year</div>'}
+      </div>
+    </div>
+    <div class="dash-grid">
+      <div class="card"><div class="cut-head"><h2>Month by month</h2></div><div class="tbl-wrap"><table>
+        <thead><tr><th>Month</th><th class="num">Income</th><th class="num">Expenses</th><th class="num">Left</th><th>Bills paid</th></tr></thead>
+        <tbody>${rows.map(r => { const nb = r.M.a.bills.length + r.M.b.bills.length, np = r.M.a.paidN + r.M.b.paidN; return `<tr class="click ${r.ym===now?'cur':''}" data-act="goto" data-v="${r.ym}">
+          <td>${r.m}</td><td class="num">${money(r.M.income)}</td><td class="num">${money(r.M.youPay)}</td><td class="num ${r.M.left<0?'neg':''}"><b>${money(r.M.left)}</b></td>
+          <td>${nb ? `<span class="tag ${np===nb?'share':idx(r.ym)<idx(now)?'late':''}">${np}/${nb}</span>` : '—'}</td></tr>`; }).join('')}
+          <tr class="total"><td>Total</td><td class="num">${money(T.income)}</td><td class="num">${money(T.exp)}</td><td class="num">${money(T.left)}</td><td></td></tr>
+        </tbody></table></div></div>
+      <div class="card"><div class="cut-head"><h2>Installments in ${y}</h2></div>
+        <div class="sec"><div class="tot"><span class="k">Finishing this year</span><b>${finishing.length}</b></div>
+          <div class="tot"><span class="k">Still owed after Dec ${y}</span><b>${money(owedEnd)}</b></div></div>
+        <div class="sec">${finishing.length ? finishing.map(r => `<div class="line"><div class="nm">${esc(r.b.name)}<small>last payment ${ymLabel(r.st.lastYm)}</small></div><div class="amt">${r.st.done?`<span class="tag share">${ic('circle-check')} paid off</span>`:`${r.st.paidN}/${r.st.n}`}</div></div>`).join('') : '<div class="empty">No installments end this year</div>'}</div>
+        <div class="sec"><a class="link" data-act="view" data-v="paid">See all paid items ${ic('chevron-right')}</a></div>
+      </div>
     </div>${footer()}`;
+}
+
+/* ---------- Paid tab ---------- */
+function viewPaid(){
+  const now = ymNow();
+  const inst = installments().map(b => ({b, st:instStatus(b)}));
+  const done = inst.filter(r => r.st.done).sort((a,b) => idx(b.st.lastYm) - idx(a.st.lastYm));
+  const onceDone = data.bills.filter(b => b.kind === 'once' && b.month && isPaid(b, b.month)).sort((a,b) => idx(b.month) - idx(a.month));
+  const running = inst.filter(r => !r.st.done).sort((a,b) => b.st.overdue.length - a.st.overdue.length || idx(a.st.lastYm) - idx(b.st.lastYm));
+  const range = (a, b) => !a ? '—' : a === b ? ymLabel(a) : `${ymLabel(a)} – ${ymLabel(b)}`;
+  const status = st => st.overdue.length ? `<span class="pill bad">${ic('circle-alert')} ${st.overdue.length} overdue</span>`
+    : st.dueNow ? `<span class="pill warn">${ic('clock')} Due this month</span>`
+    : st.paidN > st.expected + 1 ? `<span class="pill good">${ic('circle-check')} Ahead</span>`
+    : `<span class="pill good">${ic('circle-check')} On track</span>`;
+  const paidOffTotal = sum(done, r => r.st.total) + sum(onceDone, b => num(b.amount));
+  const paidSoFar = sum(inst, r => r.st.paidAmt);
+  const overdueN = sum(running, r => r.st.overdue.length);
+  return `<div class="head"><h1>Paid</h1></div>
+    <div class="kpis">
+      <div class="card kpi"><div class="lbl">Fully paid off</div><div class="num pos">${done.length + onceDone.length}</div><div class="sub">${money(paidOffTotal)} cleared</div></div>
+      <div class="card kpi"><div class="lbl">Installments running</div><div class="num">${running.length}</div><div class="sub">${money(sum(running, r => r.st.remaining))} still to pay</div></div>
+      <div class="card kpi"><div class="lbl">Paid on installments so far</div><div class="num">${money(paidSoFar)}</div><div class="sub">of ${money(sum(inst, r => r.st.total))} total</div></div>
+      <div class="card kpi"><div class="lbl">Overdue payments</div><div class="num ${overdueN?'neg':'pos'}">${overdueN}</div><div class="sub">${overdueN?'unticked months that already passed':'nothing missed'}</div></div>
+    </div>
+    <div class="card" style="margin-bottom:18px"><div class="cut-head"><h2>${ic('trophy')} Fully paid</h2><span class="badge">${done.length + onceDone.length}</span></div>
+      ${done.length || onceDone.length ? `<div class="tbl-wrap"><table>
+        <thead><tr><th>Item</th><th>Months paid</th><th class="num">No. of months</th><th class="num">Installment amount</th><th class="num">Total price</th><th class="num">Total paid</th></tr></thead>
+        <tbody>${done.map(r => `<tr><td><b>${esc(r.b.name)}</b><div class="sub">${esc([r.b.account, r.b.cutoff + ' cutoff'].filter(Boolean).join(' · '))}</div></td>
+          <td>${range(r.st.firstYm, r.st.lastYm)}</td><td class="num">${r.st.n}</td><td class="num">${money(num(r.b.amount))}${num(r.b.final)>0?`<div class="sub">last: ${money(num(r.b.final))}</div>`:''}</td>
+          <td class="num">${money(r.st.price)}</td><td class="num"><b>${money(r.st.total)}</b></td></tr>`).join('')}
+        ${onceDone.map(b => `<tr><td><b>${esc(b.name)}</b><div class="sub">one-time · ${b.cutoff} cutoff</div></td><td>${ymLabel(b.month)}</td><td class="num">1</td><td class="num">—</td><td class="num">${money(num(b.amount))}</td><td class="num"><b>${money(num(b.amount))}</b></td></tr>`).join('')}
+        </tbody></table></div>` : `<div class="pad empty">Nothing fully paid yet. Tick an installment's last payment in Monthly and it lands here.</div>`}
+    </div>
+    <div class="card"><div class="cut-head"><h2>Installments in progress</h2><span class="badge">${running.length}</span></div>
+      ${running.length ? `<div class="tbl-wrap"><table>
+        <thead><tr><th>Item</th><th>Progress</th><th>Months paid</th><th class="num">Should be paid by now</th><th>Status</th><th class="num">Installment</th><th class="num">Total price</th><th class="num">Paid so far</th><th class="num">Remaining</th></tr></thead>
+        <tbody>${running.map(r => { const st = r.st, pct = Math.round(st.paidN / st.n * 100); return `<tr>
+          <td><b>${esc(r.b.name)}</b><div class="sub">${esc([r.b.account, r.b.cutoff + ' cutoff', 'ends ' + ymLabel(st.lastYm, true)].filter(Boolean).join(' · '))}</div></td>
+          <td style="min-width:150px"><div class="sub" style="margin-bottom:3px"><b style="color:var(--text)">${st.paidN} of ${st.n}</b> months</div><div class="bar"><span style="width:${pct}%"></span></div></td>
+          <td>${st.paidN ? range(st.firstPaid, st.lastPaid) : 'none yet'}</td>
+          <td class="num">${st.expected} of ${st.n}</td>
+          <td>${status(st)}${st.overdue.length?`<div class="sub">${st.overdue.map(p => ymLabel(p.ym, true)).join(', ')}</div>`:''}</td>
+          <td class="num">${money(num(r.b.amount))}</td><td class="num">${money(st.price)}</td>
+          <td class="num">${money(st.paidAmt)}</td><td class="num"><b>${money(st.remaining)}</b></td></tr>`; }).join('')}
+          <tr class="total"><td colspan="7">Total</td><td class="num">${money(sum(running, r => r.st.paidAmt))}</td><td class="num">${money(sum(running, r => r.st.remaining))}</td></tr>
+        </tbody></table></div>` : '<div class="pad empty">No installments running.</div>'}
+    </div>
+    <p class="note">Months before ${ymLabel(trackFrom())} come from your spreadsheet and count as paid. From ${ymLabel(trackFrom())} on, a month only counts once you tick it in Monthly. "Should be paid by now" counts the months that have already passed.</p>${footer()}`;
 }
 
 /* ---------- Expenses list ---------- */
@@ -567,7 +799,7 @@ function debtCard(){
     for (let k = 1; k <= n; k++){
       const ym = ymAdd(b.start, k-1), a = (k === n && num(b.final) > 0) ? num(b.final) : num(b.amount);
       total += a;
-      if (idx(ym) < idx(now) || data.paid[b.id+'|'+ym]) paidAmt += a; else { payLeft++; if (!last || idx(ym) > idx(last)) last = ym; }
+      if (isPaid(b, ym)) paidAmt += a; else { payLeft++; if (!last || idx(ym) > idx(last)) last = ym; }
     }
   });
   if (!total) return '';
@@ -585,7 +817,7 @@ function afterRender(){
     if (reduce || from === to) return;
     const t0 = performance.now(), dur = 500;
     el.classList.add(to > from ? 'up' : 'down');
-    const step = t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = money(Math.round(from + (to - from) * e)); if (p < 1) requestAnimationFrame(step); else setTimeout(() => el.classList.remove('up','down'), 400); };
+    const step = t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = key === 'cd' ? Math.round(from + (to - from) * e).toLocaleString() : money(Math.round(from + (to - from) * e)); if (p < 1) requestAnimationFrame(step); else setTimeout(() => el.classList.remove('up','down'), 400); };
     requestAnimationFrame(step);
   });
   const f = $('#qa');
@@ -630,6 +862,56 @@ function startInlineEdit(el){
   };
   inp.addEventListener('keydown', e => { if (e.key === 'Enter') finish(true); if (e.key === 'Escape') finish(false); });
   inp.addEventListener('blur', () => finish(true));
+}
+
+/* ---------- live currency converter ---------- */
+const FX_CODES = [['PHP','₱'],['USD','$'],['AUD','A$'],['GBP','£'],['EUR','€'],['SGD','S$'],['CAD','C$'],['JPY','¥'],['HKD','HK$'],['AED','AED '],['THB','฿'],['KRW','₩']];
+const fx = {rates:null, time:0, fetched:0, src:'', state:{amt:'1', from:'USD', to:'PHP'}};
+function fxSave(){ try { localStorage.setItem('cio-fx', JSON.stringify({rates:fx.rates, time:fx.time, fetched:fx.fetched, src:fx.src, state:fx.state})); } catch(e){} }
+function fxLoadCache(){ try { const c = JSON.parse(localStorage.getItem('cio-fx') || 'null'); if (c){ Object.assign(fx, {rates:c.rates, time:c.time, fetched:c.fetched, src:c.src}); if (c.state) fx.state = c.state; } } catch(e){} }
+async function fxFetch(force){
+  if (!force && fx.rates && Date.now() - fx.fetched < 30*60*1000) return fxShow();
+  const live = document.querySelector('.fx-live');
+  try {
+    const r = await fetch('https://open.er-api.com/v6/latest/USD', {cache:'no-store'});
+    const j = await r.json();
+    if (j.result !== 'success' || !j.rates) throw new Error('bad response');
+    Object.assign(fx, {rates:j.rates, time:j.time_last_update_unix*1000, fetched:Date.now(), src:'ExchangeRate-API'});
+  } catch(e){
+    try {
+      const r = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json', {cache:'no-store'});
+      const j = await r.json(), rates = {};
+      Object.entries(j.usd || {}).forEach(([k,v]) => rates[k.toUpperCase()] = v);
+      if (!rates.PHP) throw new Error('no rates');
+      Object.assign(fx, {rates, time:new Date(j.date + 'T00:00:00Z').getTime(), fetched:Date.now(), src:'Currency API'});
+    } catch(e2){ if (live) live.classList.add('off'); fxShow(true); return; }
+  }
+  if (live) live.classList.remove('off');
+  fxSave(); fxShow(false, true);
+}
+function fxShow(failed, flash){
+  const out = $('#fx-out'), meta = $('#fx-meta'), {amt, from, to} = fx.state;
+  $('#fx-google').href = `https://www.google.com/search?q=${encodeURIComponent((num(amt)||1) + ' ' + from + ' to ' + to)}`;
+  if (!fx.rates){ out.textContent = '—'; meta.textContent = failed ? 'Rates unavailable right now. Tap the link icon to check on Google.' : 'Loading rates…'; return; }
+  const val = num(amt) * fx.rates[to] / fx.rates[from];
+  const sym = (FX_CODES.find(c => c[0] === to) || [,''])[1];
+  out.textContent = sym + val.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+  if (flash){ out.classList.remove('flash'); void out.offsetWidth; out.classList.add('flash'); }
+  const unit = fx.rates[to] / fx.rates[from];
+  const mins = Math.round((Date.now() - fx.fetched) / 60000);
+  meta.textContent = `1 ${from} = ${unit.toLocaleString(undefined,{maximumFractionDigits:4})} ${to} · rate updated ${new Date(fx.time).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})} · checked ${mins < 1 ? 'just now' : mins + ' min ago'}${failed ? ' · offline, showing last saved rate' : ''}`;
+}
+function fxInit(){
+  fxLoadCache();
+  const opts = sel => FX_CODES.map(([c]) => `<option ${c===sel?'selected':''}>${c}</option>`).join('');
+  $('#fx-from').innerHTML = opts(fx.state.from); $('#fx-to').innerHTML = opts(fx.state.to); $('#fx-amt').value = fx.state.amt;
+  const upd = () => { fx.state = {amt:$('#fx-amt').value, from:$('#fx-from').value, to:$('#fx-to').value}; fxSave(); fxShow(); };
+  $('#fx-amt').addEventListener('input', upd);
+  $('#fx-from').addEventListener('change', upd); $('#fx-to').addEventListener('change', upd);
+  $('#fx-swap').addEventListener('click', () => { const f = $('#fx-from').value; $('#fx-from').value = $('#fx-to').value; $('#fx-to').value = f; upd(); });
+  fxShow(); fxFetch();
+  setInterval(() => fxFetch(true), 30*60*1000);   // refresh every 30 minutes
+  setInterval(() => fx.rates && fxShow(), 60*1000);  // keep "checked x min ago" current
 }
 
 /* ---------- forms ---------- */
@@ -718,7 +1000,7 @@ async function importFile(file){
     <div class="mact"><button class="btn" data-act="close">Cancel</button><button class="btn primary" id="do-imp">Replace &amp; import</button></div>`);
   $('#do-imp').onclick = () => {
     data = Object.assign({incomes:[], bills:[], allocs:[], paid:{}, settings:{currency:'₱'}}, j.data);
-    CUR = data.settings.currency || '₱'; persist(); closeModal(); render(); toast('Imported');
+    data.settings ||= {}; if (!data.settings.trackFrom) data.settings.trackFrom = ymNow(); CUR = data.settings.currency || '₱'; persist(); closeModal(); render(); toast('Imported');
   };
 }
 
@@ -733,7 +1015,8 @@ document.addEventListener('click', e => {
   if (ed && !ed.querySelector('input')){ startInlineEdit(ed); return; }
   const b = e.target.closest('[data-act]'); if (!b) return;
   const {act, store, id, v} = b.dataset;
-  if (act === 'view') go(v === 'month' ? {view:'month'} : v === 'year' ? {view:'year', year:Number(ui.ym.slice(0,4))} : {view:v});
+  if (act === 'view') go({view:v});
+  else if (act === 'dashhome') go({view:'dash', year:Number(ymNow().slice(0,4))});
   else if (act === 'ym') go({ym:v});
   else if (act === 'year') go({year:Number(v)});
   else if (act === 'goto') go({view:'month', ym:v});
@@ -761,7 +1044,7 @@ document.addEventListener('change', e => {
   const el = e.target;
   if (el.dataset.paid){
     const [bid, ym] = el.dataset.paid.split('|');
-    if (el.checked) data.paid[el.dataset.paid] = true; else delete data.paid[el.dataset.paid];
+    data.paid[el.dataset.paid] = el.checked;
     persist(); render();
     if (el.checked){
       const b = data.bills.find(x => x.id === bid), r = b && billFor(b, ym);
@@ -771,6 +1054,7 @@ document.addEventListener('change', e => {
       else toast(`${b.name} paid · ${C.bills.length - C.paidN} left this cutoff`, 'circle-check');
     }
   }
+  else if (el.id === 'ysel') go({year:Number(el.value)});
   else if (el.id === 'bf'){ ui.billFilter = el.value; render(); }
   else if (el.id === 'bc'){ ui.billCut = el.value; render(); }
   else if (el.id === 'cur'){ CUR = data.settings.currency = el.value; persist(); render(); }
@@ -778,7 +1062,7 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-load(); readRoute(); try { history.replaceState(null, '', '#' + routeOf()); } catch(e){} render();
+fxInit(); load(); readRoute(); try { history.replaceState(null, '', '#' + routeOf()); } catch(e){} render();
 </script>
 </body>
 </html>
