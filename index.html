@@ -61,6 +61,27 @@ main{max-width:1200px;margin:0 auto;padding:22px 24px 70px}
 .stat .lbl{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
 .stat .num{font-size:22px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
 .stat .sub{color:var(--muted);font-size:12px}
+.ic{display:inline-block;width:16px;height:16px;flex-shrink:0;vertical-align:-3px;background-color:currentColor;-webkit-mask:var(--src) center/contain no-repeat;mask:var(--src) center/contain no-repeat}
+.ic.lg{width:18px;height:18px}
+.ic-zap{--src:url(icons/zap.svg)}
+.ic-folder-open{--src:url(icons/folder-open.svg)}
+.ic-save{--src:url(icons/save.svg)}
+.ic-house{--src:url(icons/house.svg)}
+.ic-arrow-left{--src:url(icons/arrow-left.svg)}
+.ic-chevron-left{--src:url(icons/chevron-left.svg)}
+.ic-chevron-right{--src:url(icons/chevron-right.svg)}
+.ic-pencil{--src:url(icons/pencil.svg)}
+.ic-trash{--src:url(icons/trash.svg)}
+.ic-party-popper{--src:url(icons/party-popper.svg)}
+.ic-circle-check{--src:url(icons/circle-check.svg)}
+.ic-triangle-alert{--src:url(icons/triangle-alert.svg)}
+.ic-plus{--src:url(icons/plus.svg)}
+.ic-calendar-days{--src:url(icons/calendar-days.svg)}
+.ic-calendar-range{--src:url(icons/calendar-range.svg)}
+.ic-receipt{--src:url(icons/receipt.svg)}
+.ic-wallet{--src:url(icons/wallet.svg)}
+.ic-trending-down{--src:url(icons/trending-down.svg)}
+.ic-arrow-right{--src:url(icons/arrow-right.svg)}
 .pos{color:var(--good)} .neg{color:var(--bad)}
 .backbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .hdr-acts{display:flex;gap:6px}
@@ -188,7 +209,7 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
 <header><div class="hwrap">
   <div class="logo" data-act="home" style="cursor:pointer" title="Go to this month">Cio Budget Planner<small>Income vs expenses · 15th &amp; 30th cutoffs</small></div>
   <nav class="tabs" id="tabs"></nav>
-  <div class="hdr-acts"><button class="btn sm primary" data-act="import" title="Load your starter or backup .json file">📂 Import file</button><button class="btn sm" data-act="export" title="Download a backup .json file">💾 Backup</button></div>
+  <div class="hdr-acts"><button class="btn sm primary" data-act="import" title="Load your starter or backup .json file"><i class="ic ic-folder-open" aria-hidden="true"></i> Import file</button><button class="btn sm" data-act="export" title="Download a backup .json file"><i class="ic ic-save" aria-hidden="true"></i> Backup</button></div>
 </div></header>
 <main id="main"></main>
 <div id="modal-root"></div>
@@ -196,6 +217,7 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
 <input type="file" id="import-file" accept=".json,application/json" hidden>
 <script>
 /* ---------- helpers ---------- */
+const ic = (n, cls='') => `<i class="ic ic-${n} ${cls}" aria-hidden="true"></i>`;
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
@@ -210,10 +232,7 @@ const ymLabel = (ym, short) => { if (!ym) return '—'; const [y,m] = ym.split('
 let CUR = '₱';
 const money = n => (n < 0 ? '−' : '') + CUR + Math.abs(n).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2});
 const sum = (arr, f) => arr.reduce((s,x) => s + (f ? f(x) : x), 0);
-const ICON = {
-  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/></svg>',
-  del:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',
-};
+const ICON = { edit: ic('pencil'), del: ic('trash') };
 
 /* ---------- data ---------- */
 const KEY = 'cio-budget-v1';
@@ -312,9 +331,9 @@ const bucketNames = () => [...new Set(data.allocs.map(a => a.name))];
 
 /* ---------- UI state ---------- */
 const ui = {view:'month', ym:ymNow(), year:Number(ymNow().slice(0,4)), billFilter:'all', billCut:'all'};
-const VIEWS = [['month','Monthly'],['year','Yearly'],['bills','Expenses'],['income','Income & Savings']];
+const VIEWS = [['month','Monthly','calendar-days'],['year','Yearly','calendar-range'],['bills','Expenses','receipt'],['income','Income & Savings','wallet']];
 function renderTabs(){
-  $('#tabs').innerHTML = VIEWS.map(([k,l]) => `<button class="tab ${ui.view===k?'on':''}" data-act="view" data-v="${k}">${l}</button>`).join('');
+  $('#tabs').innerHTML = VIEWS.map(([k,l,i]) => `<button class="tab ${ui.view===k?'on':''}" data-act="view" data-v="${k}">${ic(i)} ${l}</button>`).join('');
 }
 /* ---------- navigation history ---------- */
 const routeOf = () => ui.view==='month' ? 'month/'+ui.ym : ui.view==='year' ? 'year/'+ui.year : ui.view;
@@ -336,7 +355,7 @@ window.addEventListener('popstate', () => { if (navDepth > 0) navDepth--; });
 function backBar(){
   const atHome = ui.view === 'month' && ui.ym === ymNow();
   if (atHome) return '';
-  return `<div class="backbar"><button class="btn" data-act="back">← Back</button><button class="btn" data-act="home">🏠 This month (${ymLabel(ymNow(), true)})</button></div>`;
+  return `<div class="backbar"><button class="btn" data-act="back">${ic('arrow-left')} Back</button><button class="btn" data-act="home">${ic('house')} This month (${ymLabel(ymNow(), true)})</button></div>`;
 }
 
 function render(){
@@ -351,8 +370,8 @@ function welcome(){
   return `<div class="card welcome"><h2>Let's set up your budget</h2>
     <p>Import your starter file to load your current income, bills and installments, or start from scratch.</p>
     <button class="btn primary" data-act="import">Import starter / backup file</button>
-    <button class="btn" data-act="add" data-store="incomes">+ Add income</button>
-    <button class="btn" data-act="add" data-store="bills">+ Add expense</button></div>`;
+    <button class="btn" data-act="add" data-store="incomes">${ic('plus')} Add income</button>
+    <button class="btn" data-act="add" data-store="bills">${ic('plus')} Add expense</button></div>`;
 }
 const footer = () => `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:26px;align-items:center;color:var(--muted);font-size:12px">
   <span>Saved in this browser.</span>
@@ -363,16 +382,16 @@ const footer = () => `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top
 function monthChips(){
   const y = Number(ui.ym.slice(0,4)), now = ymNow();
   return `<div class="months">
-    <button class="mchip" data-act="ym" data-v="${ymAdd(ui.ym,-12)}">‹ ${y-1}</button>
+    <button class="mchip" data-act="ym" data-v="${ymAdd(ui.ym,-12)}">${ic('chevron-left')} ${y-1}</button>
     ${MONTHS.map((m,i) => { const ym = y + '-' + pad(i+1); return `<button class="mchip ${ym===ui.ym?'on':''} ${ym===now?'now':''}" data-act="ym" data-v="${ym}">${m.slice(0,3)}</button>`; }).join('')}
-    <button class="mchip" data-act="ym" data-v="${ymAdd(ui.ym,12)}">${y+1} ›</button></div>`;
+    <button class="mchip" data-act="ym" data-v="${ymAdd(ui.ym,12)}">${y+1} ${ic('chevron-right')}</button></div>`;
 }
 function viewMonth(){
   const ym = ui.ym, M = month(ym);
   const bucketStats = Object.entries(M.buckets).map(([n,v]) => `<div class="card stat"><div class="lbl">${esc(n)}</div><div class="num">${money(v)}</div><div class="sub">set aside this month</div></div>`).join('');
   return `<div class="head"><h1>${ymLabel(ym)}</h1>
-      <button class="btn" data-act="ym" data-v="${ymAdd(ym,-1)}">‹ Prev</button><button class="btn" data-act="ym" data-v="${ymAdd(ym,1)}">Next ›</button>
-      <button class="btn primary" data-act="add" data-store="bills" data-ym="${ym}">+ Add expense</button></div>
+      <button class="btn" data-act="ym" data-v="${ymAdd(ym,-1)}">${ic('chevron-left')} Prev</button><button class="btn" data-act="ym" data-v="${ymAdd(ym,1)}">Next ${ic('chevron-right')}</button>
+      <button class="btn primary" data-act="add" data-store="bills" data-ym="${ym}">${ic('plus')} Add expense</button></div>
     ${monthChips()}
     <div class="card summary">
       <div class="sum-col"><div class="lbl">Total income</div><div class="big" data-count="income" data-to="${M.income}">${money(M.income)}</div></div>
@@ -406,10 +425,10 @@ function cutCard(ym, c, C){
   };
   return `<div class="card">
     <div class="cut-head"><h2>${c} cutoff</h2><span class="badge">${C.paidN}/${C.bills.length} paid</span></div>
-    <div class="sec"><div class="sec-t">Income <a data-act="add" data-store="incomes" data-cut="${c}">+ Add</a></div>
+    <div class="sec"><div class="sec-t">Income <a data-act="add" data-store="incomes" data-cut="${c}">${ic('plus')} Add</a></div>
       ${C.salary.length ? C.salary.map(r => `<div class="line"><div class="nm">${esc(r.x.name)}${r.x.recur==='once'?'<span class="tag">one-time</span>':''}</div><div class="amt editable" data-edit="incomes|${r.x.id}" title="Tap to change amount">${money(r.amt)}</div>${rowActs('incomes', r.x.id)}</div>`).join('') : '<div class="empty">No income for this cutoff</div>'}
     </div>
-    <div class="sec"><div class="sec-t">Bills to pay <a data-act="add" data-store="bills" data-cut="${c}" data-ym="${ym}">+ Add</a></div>
+    <div class="sec"><div class="sec-t">Bills to pay <a data-act="add" data-store="bills" data-cut="${c}" data-ym="${ym}">${ic('plus')} Add</a></div>
       ${C.bills.length ? `<div class="bar" title="${pctPaid}% paid"><span style="width:${pctPaid}%"></span></div>` + C.bills.map(billLine).join('') : '<div class="empty">No bills this cutoff</div>'}
     </div>
     <div class="sec">
@@ -419,7 +438,7 @@ function cutCard(ym, c, C){
       <div class="tot"><span class="k">Income</span><span>${money(C.incomeT)}</span></div>
       <div class="tot big"><span>Left after bills</span><span class="${C.left<0?'neg':'pos'}">${money(C.left)}</span></div>
     </div>
-    <div class="sec"><div class="sec-t">Where the rest goes <a data-act="add" data-store="allocs" data-cut="${c}">+ Add</a></div>
+    <div class="sec"><div class="sec-t">Where the rest goes <a data-act="add" data-store="allocs" data-cut="${c}">${ic('plus')} Add</a></div>
       ${C.allocs.length ? C.allocs.map(r => `<div class="line"><div class="nm">${esc(r.a.name)}${r.a.mode==='pct'?`<span class="tag">${num(r.a.value)}%</span>`:''}${r.a.where?`<small>${esc(r.a.where)}</small>`:''}</div><div class="amt">${money(r.amt)}</div>${rowActs('allocs', r.a.id)}</div>`).join('') : '<div class="empty">Add savings or play money buckets</div>'}
       <div class="tot big"><span>Free / unallocated</span><span class="${C.unalloc<0?'neg':''}">${money(C.unalloc)}</span></div>
       ${C.unalloc < 0 ? `<p class="note neg">Your buckets add up to more than what's left. Lower a bucket or an expense.</p>` : ''}
@@ -445,7 +464,7 @@ function viewYear(){
   }).filter(r => r.left > 0).sort((a,b) => idx(a.endYm) - idx(b.endYm));
   const debtFree = inst.length ? inst[inst.length-1].endYm : null;
   return `<div class="head"><h1>${y} overview</h1>
-      <button class="btn" data-act="year" data-v="${y-1}">‹ ${y-1}</button><button class="btn" data-act="year" data-v="${y+1}">${y+1} ›</button></div>
+      <button class="btn" data-act="year" data-v="${y-1}">${ic('chevron-left')} ${y-1}</button><button class="btn" data-act="year" data-v="${y+1}">${y+1} ${ic('chevron-right')}</button></div>
     <div class="stats">
       <div class="card stat"><div class="lbl">Income ${y}</div><div class="num">${money(T.income)}</div></div>
       <div class="card stat"><div class="lbl">Total expenses</div><div class="num">${money(T.youPay)}</div></div>
@@ -481,7 +500,7 @@ function viewBills(){
   const sched = b => b.kind==='installment' ? `${ymLabel(b.start,true)} → ${b.start&&num(b.months)?ymLabel(ymAdd(b.start,num(b.months)-1),true):'?'} (${num(b.months)} mos)`
     : b.kind==='once' ? ymLabel(b.month,true) : (b.start?'from '+ymLabel(b.start,true):'every month') + (b.end?' until '+ymLabel(b.end,true):'');
   const label = {installment:'Installment', monthly:'Monthly', once:'One-time'};
-  return `<div class="head"><h1>Expenses</h1><button class="btn primary" data-act="add" data-store="bills">+ Add expense</button></div>
+  return `<div class="head"><h1>Expenses</h1><button class="btn primary" data-act="add" data-store="bills">${ic('plus')} Add expense</button></div>
     <div class="tools">
       <select id="bf">${[['all','All active'],['installment','Installments'],['monthly','Monthly'],['once','One-time'],['done','Finished']].map(([v,l])=>`<option value="${v}" ${f===v?'selected':''}>${l}</option>`).join('')}</select>
       <select id="bc">${[['all','Both cutoffs'],['15th','15th cutoff'],['30th','30th cutoff']].map(([v,l])=>`<option value="${v}" ${c===v?'selected':''}>${l}</option>`).join('')}</select>
@@ -504,11 +523,11 @@ function viewIncome(){
     <td>${a.mode==='pct'?'% of what is left':'Fixed'}</td><td class="num">${a.mode==='pct'?num(a.value)+'%':money(num(a.value))}</td>
     <td class="act"><button class="icon-btn" data-act="edit" data-store="allocs" data-id="${a.id}">${ICON.edit}</button><button class="icon-btn del" data-act="del" data-store="allocs" data-id="${a.id}">${ICON.del}</button></td></tr>`).join('');
   const block = c => `<div class="card"><div class="cut-head"><h2>${c} cutoff</h2></div>
-    <div class="sec"><div class="sec-t">Income <a data-act="add" data-store="incomes" data-cut="${c}">+ Add</a></div>
+    <div class="sec"><div class="sec-t">Income <a data-act="add" data-store="incomes" data-cut="${c}">${ic('plus')} Add</a></div>
       ${byCut(data.incomes,c).length?`<div class="tbl-wrap"><table><tbody>${incRows(c)}</tbody></table></div>`:'<div class="empty">No income yet</div>'}</div>
-    <div class="sec"><div class="sec-t">Savings, play money &amp; other buckets <a data-act="add" data-store="allocs" data-cut="${c}">+ Add</a></div>
+    <div class="sec"><div class="sec-t">Savings, play money &amp; other buckets <a data-act="add" data-store="allocs" data-cut="${c}">${ic('plus')} Add</a></div>
       ${byCut(data.allocs,c).length?`<div class="tbl-wrap"><table><tbody>${alRows(c)}</tbody></table></div>`:'<div class="empty">No buckets yet</div>'}</div></div>`;
-  return `<div class="head"><h1>Income &amp; Savings</h1><button class="btn primary" data-act="add" data-store="incomes">+ Add income</button><button class="btn" data-act="add" data-store="allocs">+ Add bucket</button></div>
+  return `<div class="head"><h1>Income &amp; Savings</h1><button class="btn primary" data-act="add" data-store="incomes">${ic('plus')} Add income</button><button class="btn" data-act="add" data-store="allocs">${ic('plus')} Add bucket</button></div>
     <div class="two">${block('15th')}${block('30th')}</div>
     <p class="note">How buckets work: after bills are paid, fixed amounts (like savings) come out first, then % buckets (like play money) split whatever remains. Anything left over shows as "Free".</p>${footer()}`;
 }
@@ -519,7 +538,7 @@ function quickAdd(ym){
   if (!qa.cutoff) qa.cutoff = (ym === ymNow() && new Date().getDate() > 15) ? '30th' : '15th';
   const seg = (key, opts) => `<div class="seg" role="group">${opts.map(([v,l]) => `<button type="button" class="${qa[key]===v?'on':''}" data-seg="${key}" data-val="${v}">${l}</button>`).join('')}</div>`;
   return `<div class="card quick">
-    <div class="q-title">⚡ Quick add an expense to ${ymLabel(ym)}</div>
+    <div class="q-title">${ic('zap','lg')} Quick add an expense to ${ymLabel(ym)}</div>
     <form id="qa" autocomplete="off">
       <input name="qname" class="q-name" placeholder="What is it? e.g. Meralco, Shopee" aria-label="Expense name">
       <div class="q-amt-wrap"><span>${esc(CUR)}</span><input name="amount" class="q-amt" inputmode="decimal" placeholder="0" aria-label="Amount"></div>
@@ -538,7 +557,7 @@ function qaImpact(){
   const after = C.left - amt, M = month(ym);
   let span = qa.kind === 'once' ? 'only this month' : qa.kind === 'monthly' ? `every month from ${ymLabel(ym, true)}` : `${num(f.months.value)||qa.months} months · ${ymLabel(ym,true)} → ${ymLabel(ymAdd(ym,(num(f.months.value)||qa.months)-1),true)} · ${money(amt*(num(f.months.value)||qa.months))} total`;
   el.className = 'q-impact ' + (after < 0 ? 'bad' : after < C.left * 0.25 ? 'meh' : 'ok');
-  el.innerHTML = `${c} cutoff left: <b>${money(C.left)}</b> → <b>${money(after)}</b> &nbsp;·&nbsp; month left: ${money(M.left)} → <b>${money(M.left - amt)}</b><br><small>${span}${after < 0 ? ' · ⚠️ this puts the cutoff in the negative' : ''}</small>`;
+  el.innerHTML = `${c} cutoff left: <b>${money(C.left)}</b> ${ic('arrow-right')} <b>${money(after)}</b> &nbsp;·&nbsp; month left: ${money(M.left)} ${ic('arrow-right')} <b>${money(M.left - amt)}</b><br><small>${span}${after < 0 ? ' · ' + ic('triangle-alert') + ' this puts the cutoff in the negative' : ''}</small>`;
 }
 function debtCard(){
   const now = ymNow();
@@ -553,7 +572,7 @@ function debtCard(){
   });
   if (!total) return '';
   const pct = Math.round(paidAmt / total * 100);
-  return `<div class="card debt"><div class="debt-top"><div><div class="lbl">Installments paid off</div><div class="debt-pct">${pct}%</div></div>
+  return `<div class="card debt"><div class="debt-top"><div><div class="lbl">${ic('trending-down')} Installments paid off</div><div class="debt-pct">${pct}%</div></div>
     <div class="debt-meta"><b>${money(total - paidAmt)}</b> still owed · <b>${payLeft}</b> payments to go${last?` · debt-free by <b>${ymLabel(last)}</b>`:''}</div></div>
     <div class="bar big-bar"><span style="width:${pct}%"></span></div></div>`;
 }
@@ -688,7 +707,7 @@ function confirmDel(store, id){
 
 /* ---------- backup ---------- */
 let toastT;
-function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200); }
+function toast(m, icon){ const t = $('#toast'); t.innerHTML = (icon ? ic(icon) + ' ' : '') + esc(m); t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200); }
 function download(text, name, type){ const u = URL.createObjectURL(new Blob([text], {type})); const a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); }
 function exportBackup(){ download(JSON.stringify({app:'cio-budget', version:1, exported:new Date().toISOString(), data}, null, 1), `cio-budget-backup-${new Date().toISOString().slice(0,10)}.json`, 'application/json'); toast('Backup downloaded'); }
 async function importFile(file){
@@ -747,9 +766,9 @@ document.addEventListener('change', e => {
     if (el.checked){
       const b = data.bills.find(x => x.id === bid), r = b && billFor(b, ym);
       const C = cutoff(ym, b.cutoff);
-      if (C.bills.length && C.paidN === C.bills.length){ celebrate(); toast(`🎉 ${b.cutoff} cutoff fully paid for ${ymLabel(ym, true)}!`); }
-      else if (r && r.k && r.k === r.n){ celebrate(); toast(`🎉 ${b.name} is fully paid off!`); }
-      else toast(`✓ ${b.name} paid · ${C.bills.length - C.paidN} left this cutoff`);
+      if (C.bills.length && C.paidN === C.bills.length){ celebrate(); toast(`${b.cutoff} cutoff fully paid for ${ymLabel(ym, true)}!`, 'party-popper'); }
+      else if (r && r.k && r.k === r.n){ celebrate(); toast(`${b.name} is fully paid off!`, 'party-popper'); }
+      else toast(`${b.name} paid · ${C.bills.length - C.paidN} left this cutoff`, 'circle-check');
     }
   }
   else if (el.id === 'bf'){ ui.billFilter = el.value; render(); }
