@@ -343,6 +343,17 @@ function load(){
   catch(e){ storageOK = false; }
   data.paid ||= {}; data.settings ||= {currency:'₱'}; CUR = data.settings.currency || '₱';
   if (!data.settings.trackFrom && (data.bills.length || data.incomes.length)){ data.settings.trackFrom = ymNow(); persist(); }
+  fixStarterSchedule();
+}
+/* One-time fix: the first starter file started every installment one month too early.
+   Only shifts starter installments that still have their original start month; never touches paid ticks. */
+const STARTER_FIX = {"s01": ["2026-01", "2026-02"], "s02": ["2025-11", "2025-12"], "s03": ["2025-11", "2025-12"], "s04": ["2026-04", "2026-05"], "s05": ["2026-01", "2026-02"], "s06": ["2026-02", "2026-03"], "s07": ["2026-04", "2026-05"], "s08": ["2026-07", "2026-08"], "s09": ["2026-08", "2026-09"], "s10": ["2026-08", "2026-09"], "s11": ["2026-09", "2026-10"], "s12": ["2026-09", "2026-10"], "s17": ["2026-06", "2026-07"], "s18": ["2026-06", "2026-07"], "s19": ["2026-08", "2026-09"], "s20": ["2026-08", "2026-09"], "s23": ["2026-08", "2026-09"], "s24": ["2026-09", "2026-10"]};
+function fixStarterSchedule(){
+  if (data.settings.scheduleFix1) return;
+  let n = 0;
+  data.bills.forEach(b => { const f = STARTER_FIX[b.id]; if (b.kind === 'installment' && f && b.start === f[0]){ b.start = f[1]; n++; } });
+  data.settings.scheduleFix1 = true;
+  if (n || data.bills.length) persist();
 }
 /* Months before trackFrom were already paid (history from the sheet); from trackFrom on, ticks decide. */
 const trackFrom = () => data.settings.trackFrom || ymNow();
@@ -1000,7 +1011,7 @@ async function importFile(file){
     <div class="mact"><button class="btn" data-act="close">Cancel</button><button class="btn primary" id="do-imp">Replace &amp; import</button></div>`);
   $('#do-imp').onclick = () => {
     data = Object.assign({incomes:[], bills:[], allocs:[], paid:{}, settings:{currency:'₱'}}, j.data);
-    data.settings ||= {}; if (!data.settings.trackFrom) data.settings.trackFrom = ymNow(); CUR = data.settings.currency || '₱'; persist(); closeModal(); render(); toast('Imported');
+    data.settings ||= {}; if (!data.settings.trackFrom) data.settings.trackFrom = ymNow(); fixStarterSchedule(); CUR = data.settings.currency || '₱'; persist(); closeModal(); render(); toast('Imported');
   };
 }
 
