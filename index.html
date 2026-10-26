@@ -62,6 +62,9 @@ main{max-width:1200px;margin:0 auto;padding:22px 24px 70px}
 .stat .num{font-size:22px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
 .stat .sub{color:var(--muted);font-size:12px}
 .pos{color:var(--good)} .neg{color:var(--bad)}
+.backbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.hdr-acts{display:flex;gap:6px}
+@media (max-width:760px){.hdr-acts{width:100%}.hdr-acts .btn{flex:1;justify-content:center}}
 .summary{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:8px 14px;padding:18px 20px;margin-bottom:18px}
 .summary .lbl{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
 .summary .big{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -182,8 +185,9 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
 </head>
 <body>
 <header><div class="hwrap">
-  <div class="logo">Cio Budget Planner<small>Income vs expenses · 15th &amp; 30th cutoffs</small></div>
+  <div class="logo" data-act="home" style="cursor:pointer" title="Go to this month">Cio Budget Planner<small>Income vs expenses · 15th &amp; 30th cutoffs</small></div>
   <nav class="tabs" id="tabs"></nav>
+  <div class="hdr-acts"><button class="btn sm primary" data-act="import" title="Load your starter or backup .json file">📂 Import file</button><button class="btn sm" data-act="export" title="Download a backup .json file">💾 Backup</button></div>
 </div></header>
 <main id="main"></main>
 <div id="modal-root"></div>
@@ -311,11 +315,34 @@ const VIEWS = [['month','Monthly'],['year','Yearly'],['bills','Expenses'],['inco
 function renderTabs(){
   $('#tabs').innerHTML = VIEWS.map(([k,l]) => `<button class="tab ${ui.view===k?'on':''}" data-act="view" data-v="${k}">${l}</button>`).join('');
 }
+/* ---------- navigation history ---------- */
+const routeOf = () => ui.view==='month' ? 'month/'+ui.ym : ui.view==='year' ? 'year/'+ui.year : ui.view;
+function go(change){
+  const before = routeOf(); Object.assign(ui, change);
+  if (routeOf() !== before){ try { history.pushState(null, '', '#' + routeOf()); navDepth++; } catch(e){} }
+  render(); scrollTo(0,0);
+}
+function readRoute(){
+  const [v, arg] = (location.hash.slice(1) || '').split('/');
+  if (v === 'month' && /^\d{4}-\d{2}$/.test(arg||'')){ ui.view = 'month'; ui.ym = arg; }
+  else if (v === 'year' && /^\d{4}$/.test(arg||'')){ ui.view = 'year'; ui.year = Number(arg); }
+  else if (v === 'bills' || v === 'income'){ ui.view = v; }
+  else { ui.view = 'month'; ui.ym = ymNow(); }
+}
+window.addEventListener('popstate', () => { readRoute(); closeModal(); render(); });
+let navDepth = 0;
+window.addEventListener('popstate', () => { if (navDepth > 0) navDepth--; });
+function backBar(){
+  const atHome = ui.view === 'month' && ui.ym === ymNow();
+  if (atHome) return '';
+  return `<div class="backbar"><button class="btn" data-act="back">← Back</button><button class="btn" data-act="home">🏠 This month (${ymLabel(ymNow(), true)})</button></div>`;
+}
+
 function render(){
   renderTabs();
   let h = storageOK ? '' : `<div class="warn">Your browser is blocking storage here, so changes won't be kept after you close the page. Open it from your website in Chrome to save normally.</div>`;
   if (!data.incomes.length && !data.bills.length) h += welcome();
-  else h += ({month:viewMonth, year:viewYear, bills:viewBills, income:viewIncome})[ui.view]();
+  else h += backBar() + ({month:viewMonth, year:viewYear, bills:viewBills, income:viewIncome})[ui.view]();
   $('#main').innerHTML = h;
   afterRender();
 }
@@ -686,10 +713,12 @@ document.addEventListener('click', e => {
   if (ed && !ed.querySelector('input')){ startInlineEdit(ed); return; }
   const b = e.target.closest('[data-act]'); if (!b) return;
   const {act, store, id, v} = b.dataset;
-  if (act === 'view'){ ui.view = v; render(); scrollTo(0,0); }
-  else if (act === 'ym'){ ui.ym = v; render(); }
-  else if (act === 'year'){ ui.year = Number(v); render(); }
-  else if (act === 'goto'){ ui.ym = v; ui.view = 'month'; render(); scrollTo(0,0); }
+  if (act === 'view') go(v === 'month' ? {view:'month'} : v === 'year' ? {view:'year', year:Number(ui.ym.slice(0,4))} : {view:v});
+  else if (act === 'ym') go({ym:v});
+  else if (act === 'year') go({year:Number(v)});
+  else if (act === 'goto') go({view:'month', ym:v});
+  else if (act === 'home') go({view:'month', ym:ymNow()});
+  else if (act === 'back'){ if (navDepth > 0) history.back(); else go({view:'month', ym:ymNow()}); }
   else if (act === 'add'){
     const preset = {};
     if (b.dataset.cut) preset.cutoff = b.dataset.cut;
@@ -729,7 +758,7 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-load(); render();
+load(); readRoute(); try { history.replaceState(null, '', '#' + routeOf()); } catch(e){} render();
 </script>
 </body>
 </html>
