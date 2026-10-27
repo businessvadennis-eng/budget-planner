@@ -31,7 +31,7 @@ html,body{margin:0}
 body{background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 button,input,select,textarea{font:inherit;color:inherit}
 .shell{display:flex;min-height:100vh}
-.side{width:224px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:18px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;z-index:11}
+.side{width:236px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:18px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:11}
 .logo{font-weight:700;font-size:16px;padding:0 10px 14px;cursor:pointer}
 .logo small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
 .tabs{display:flex;flex-direction:column;gap:3px}
@@ -57,15 +57,17 @@ main{max-width:1180px;padding:22px 28px 70px}
 .cd-icon{width:34px;height:34px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex-shrink:0}
 .cd-icon .ic{width:18px;height:18px}
 /* currency converter */
-.fx{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px 8px 6px 10px;margin-left:auto;max-width:470px}
-.fx input{width:74px;padding:5px 7px;border:1px solid var(--border);border-radius:6px;background:var(--bg);text-align:right;font-weight:600}
-.fx select{padding:5px 4px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-weight:600}
-.fx-out{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;min-width:92px;text-align:right;color:var(--accent)}
-.fx-live{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--good);text-transform:uppercase;letter-spacing:.05em}
+.fx{display:flex;flex-direction:column;gap:7px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px;margin-top:14px}
+.fx-row{display:flex;align-items:center;gap:4px;justify-content:space-between}
+.fx-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.fx input{width:100%;padding:7px 9px;border:1px solid var(--border);border-radius:7px;background:var(--surface);text-align:right;font-weight:700;font-size:15px}
+.fx select{flex:1;min-width:0;padding:6px 4px;border:1px solid var(--border);border-radius:7px;background:var(--surface);font-weight:600}
+.fx-out{font-weight:800;font-size:19px;font-variant-numeric:tabular-nums;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fx-live{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--good);text-transform:uppercase;letter-spacing:.05em}
 .fx-live .dot{width:7px;height:7px;border-radius:50%;background:var(--good);animation:pulse 2s infinite}
 .fx-live.off{color:var(--muted)} .fx-live.off .dot{background:var(--muted);animation:none}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(31,138,91,.5)}70%{box-shadow:0 0 0 6px rgba(31,138,91,0)}100%{box-shadow:0 0 0 0 rgba(31,138,91,0)}}
-.fx-meta{flex-basis:100%;font-size:11px;line-height:1.35;color:var(--muted);text-align:right}
+.fx-meta{font-size:11px;line-height:1.35;color:var(--muted)}
 .fx-out.flash{animation:flash .6s}
 @keyframes flash{0%{opacity:.3}100%{opacity:1}}
 @media (prefers-reduced-motion: reduce){.fx-live .dot{animation:none}.fx-out.flash{animation:none}}
@@ -276,8 +278,11 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
   .tab{width:auto;padding:8px 10px}
   .side-foot{margin:0 0 0 auto;flex-direction:row;border:0;padding:0}
   .topbar{position:static;padding:10px 16px}
-  .fx{margin-left:0;width:100%}
-  .fx-meta{text-align:left}
+  .side{flex-wrap:wrap}
+  .fx{order:9;width:100%;margin-top:4px;flex-direction:row;flex-wrap:wrap;align-items:center}
+  .fx input{width:90px}
+  .fx .fx-row{flex:1 1 auto}
+  .fx-meta{flex-basis:100%}
 }
 @media (max-width:760px){
   main{padding:16px 16px 70px}
@@ -292,6 +297,17 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
 <aside class="side">
   <div class="logo" data-act="dashhome" title="Go to dashboard">Cio Budget Planner<small>Income vs expenses · 15th &amp; 30th</small></div>
   <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+  <div class="fx" id="fx">
+    <div class="fx-row"><span class="fx-title">Currency</span><span class="fx-live" title="Live rate"><span class="dot"></span>Live</span></div>
+    <input id="fx-amt" inputmode="decimal" value="1" aria-label="Amount to convert">
+    <div class="fx-row">
+      <select id="fx-from" aria-label="From currency"></select>
+      <button class="icon-btn" id="fx-swap" title="Swap currencies"><i class="ic ic-arrow-left-right" aria-hidden="true"></i></button>
+      <select id="fx-to" aria-label="To currency"></select>
+    </div>
+    <div class="fx-row"><span class="fx-out" id="fx-out">…</span><a class="icon-btn" id="fx-google" target="_blank" rel="noopener" title="Check this rate on Google"><i class="ic ic-external-link" aria-hidden="true"></i></a></div>
+    <div class="fx-meta" id="fx-meta"></div>
+  </div>
   <div class="side-foot">
     <button class="btn sm primary" data-act="import" title="Load your starter or backup .json file"><i class="ic ic-folder-open" aria-hidden="true"></i> Import file</button>
     <button class="btn sm" data-act="export" title="Download a backup .json file"><i class="ic ic-save" aria-hidden="true"></i> Backup</button>
@@ -300,16 +316,7 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
 <div class="content">
   <div class="topbar">
     <div id="countdown" class="countdown"></div>
-    <div class="fx" id="fx">
-      <span class="fx-live" title="Live rate"><span class="dot"></span>Live</span>
-      <input id="fx-amt" inputmode="decimal" value="1" aria-label="Amount to convert">
-      <select id="fx-from" aria-label="From currency"></select>
-      <button class="icon-btn" id="fx-swap" title="Swap currencies"><i class="ic ic-arrow-left-right" aria-hidden="true"></i></button>
-      <select id="fx-to" aria-label="To currency"></select>
-      <span class="fx-out" id="fx-out">…</span>
-      <a class="icon-btn" id="fx-google" target="_blank" rel="noopener" title="Check this rate on Google"><i class="ic ic-external-link" aria-hidden="true"></i></a>
-      <div class="fx-meta" id="fx-meta"></div>
-    </div>
+
   </div>
   <main id="main"></main>
 </div>
