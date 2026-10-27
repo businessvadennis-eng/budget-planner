@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cio Budget Planner</title>
+<title>MoneyFest · Manifesting Debt-Free</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%229%22 fill=%22%232f6b3f%22/%3E%3Cpath d=%22M7.5 22l5.5-5.5 4 3L23 13%22 stroke=%22white%22 stroke-width=%222.6%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M24.5 4.8l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z%22 fill=%22white%22/%3E%3C/svg%3E">
 <style>
 :root{
   --bg:#f4f6f3; --surface:#ffffff; --surface-2:#eef1ec; --border:#dfe4dc;
@@ -32,8 +33,12 @@ body{background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-syste
 button,input,select,textarea{font:inherit;color:inherit}
 .shell{display:flex;min-height:100vh}
 .side{width:236px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:18px 12px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:11}
-.logo{font-weight:700;font-size:16px;padding:0 10px 14px;cursor:pointer}
-.logo small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.logo{display:flex;align-items:center;gap:10px;padding:0 8px 16px;cursor:pointer}
+.logo-mark{width:34px;height:34px;flex-shrink:0;color:var(--accent)}
+.logo-text{display:flex;flex-direction:column;line-height:1.15}
+.wordmark{font-size:19px;font-weight:800;letter-spacing:-.02em}
+.wordmark span{color:var(--accent)}
+.logo small{display:block;font-weight:500;font-size:12px;color:var(--muted);margin-top:2px}
 .tabs{display:flex;flex-direction:column;gap:3px}
 .tab{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;padding:10px 12px;border-radius:8px;cursor:pointer;color:var(--muted);white-space:nowrap;font-size:14px}
 .tab .ic{width:18px;height:18px}
@@ -46,16 +51,18 @@ button,input,select,textarea{font:inherit;color:inherit}
 .topbar{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 28px;display:flex;align-items:center;gap:12px 20px;flex-wrap:wrap}
 main{max-width:1180px;padding:22px 28px 70px}
 /* countdown */
-.countdown{display:flex;align-items:center;gap:12px;flex:1 1 340px;min-width:0}
-.cd-num{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
-.cd-num b{font-size:24px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
-.cd-num span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
-.cd-side{flex:1;min-width:140px}
-.cd-side .bar{height:7px;margin:3px 0}
-.cd-text{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.countdown{display:flex;align-items:center;gap:14px;flex:1 1 100%;min-width:0;max-width:1124px}
+.cd-icon{width:42px;height:42px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex-shrink:0}
+.cd-icon .ic{width:20px;height:20px}
+.cd-main{flex:1;min-width:0}
+.cd-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.cd-days{font-size:13px;font-weight:600;color:var(--muted)}
+.cd-days b{font-size:24px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;margin-right:4px;letter-spacing:-.01em}
+.cd-pct{font-size:13px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+.cd-bar{height:10px;border-radius:999px;background:var(--border);overflow:hidden;margin:6px 0 5px}
+.cd-bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--good));transition:width .6s ease}
+.cd-text{font-size:12px;color:var(--muted);line-height:1.4}
 .cd-text b{color:var(--text)}
-.cd-icon{width:34px;height:34px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex-shrink:0}
-.cd-icon .ic{width:18px;height:18px}
 /* currency converter */
 .fx{display:flex;flex-direction:column;gap:7px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px;margin-top:14px}
 .fx-row{display:flex;align-items:center;gap:4px;justify-content:space-between}
@@ -171,6 +178,15 @@ main{max-width:1180px;padding:22px 28px 70px}
 .ic-circle-alert{--src:url(icons/circle-alert.svg)}
 .pos{color:var(--good)} .neg{color:var(--bad)}
 .backbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.sched{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:6px}
+.sched-opt{display:flex;flex-direction:column;gap:2px;text-align:left;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface);cursor:pointer}
+.sched-opt span{font-size:12px;color:var(--muted)}
+.sched-opt:hover{border-color:var(--accent)}
+.sched-opt.on{border-color:var(--accent);background:var(--accent-soft)}
+.sched-opt.on b{color:var(--accent)}
+.sched-day{display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-weight:600}
+.sched-day select{padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-weight:600}
+.cut-grid.many{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
 .ysel{padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-weight:700;font-size:15px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
 .kpi{padding:14px 16px}
@@ -328,7 +344,7 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
   .fx{order:9;width:100%;margin-top:4px;flex-direction:row;flex-wrap:wrap;align-items:center}
   .fx input{width:90px}
   .fx .fx-row{flex:1 1 auto}
-  .fx-meta{flex-basis:100%}
+  .fx-meta{display:none}
 }
 @media (max-width:760px){
   main{padding:16px 16px 70px}
@@ -341,7 +357,7 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
 <body>
 <div class="shell">
 <aside class="side">
-  <div class="logo" data-act="dashhome" title="Go to dashboard">Cio Budget Planner<small>Income vs expenses · 15th &amp; 30th</small></div>
+  <div class="logo" data-act="dashhome" title="Go to dashboard"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="currentColor"/><path d="M7.5 22l5.5-5.5 4 3L23 13" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M24.5 4.8l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z" fill="#fff"/></svg><div class="logo-text"><span class="wordmark">Money<span>Fest</span></span><small>Manifesting debt-free</small></div></div>
   <nav class="tabs" id="tabs" aria-label="Sections"></nav>
   <div class="tally" id="tally-side">
     <div class="fx-row"><span class="fx-title"><i class="ic ic-shopping-cart" aria-hidden="true"></i> Shopping tally</span><span class="tally-count" id="tally-count">0 items</span></div>
@@ -392,6 +408,8 @@ const ymNow = () => { const d = new Date(); return d.getFullYear() + '-' + pad(d
 const idx = ym => { const [y,m] = ym.split('-').map(Number); return y*12 + m - 1; };
 const fromIdx = i => Math.floor(i/12) + '-' + pad(i%12 + 1);
 const ymAdd = (ym, n) => fromIdx(idx(ym) + n);
+const WD = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const WD_OPTS = WD.map((d,i) => [String(i), d]);
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const ymLabel = (ym, short) => { if (!ym) return '—'; const [y,m] = ym.split('-').map(Number); return (short ? MONTHS[m-1].slice(0,3) : MONTHS[m-1]) + ' ' + y; };
 let CUR = '₱';
@@ -422,8 +440,8 @@ function fixStarterSchedule(){
 }
 /* Months before trackFrom were already paid (history from the sheet); from trackFrom on, ticks decide. */
 const trackFrom = () => data.settings.trackFrom || ymNow();
-function isPaid(b, ym){
-  const v = data.paid[b.id + '|' + ym];
+function isPaid(b, ym, r){
+  const v = data.paid[paidKey(b, ym, r)];
   if (v === true) return true;
   if (v === false) return false;
   return idx(ym) < idx(trackFrom());
@@ -451,15 +469,16 @@ function persist(){ try { localStorage.setItem(KEY, JSON.stringify(data)); } cat
 const SCHEMA = {
   bills: { label:'Expense', fields:[
     {k:'name', l:'Expense name', t:'text', req:1, full:1, ph:'e.g. MacBook, House Rent'},
-    {k:'kind', l:'Type', t:'select', opts:[['installment','Installment (fixed number of months)'],['monthly','Monthly / recurring'],['once','One-time (this month only)']], def:'installment', full:1},
-    {k:'cutoff', l:'Pay from which cutoff', t:'select', opts:[['15th','15th cutoff'],['30th','30th cutoff']], def:'15th'},
-    {k:'due', l:'Due date (optional)', t:'text', ph:'e.g. 20th'},
+    {k:'kind', l:'Type', t:'select', opts:[['installment','Installment (fixed number of months)'],['monthly','Monthly / recurring'],['weekly','Weekly (every week)'],['once','One-time (this month only)']], def:'installment', full:1},
+    {k:'cutoff', l:'Pay from which cutoff', t:'select', opts:[['15th','15th cutoff'],['30th','30th cutoff']], def:'15th', keep:1, show:{_sched:['semi'], kind:['installment','monthly','once']}},
+    {k:'weekday', l:'Paid every', t:'select', opts:WD_OPTS, def:'5', show:{kind:['weekly']}},
+    {k:'due', l:'Due day of the month', t:'text', ph:'e.g. 20th', show:{kind:['installment','monthly','once']}, hint:'With weekly or monthly pay, this decides which payday covers it.'},
     {k:'amount', l:'Amount per payment', t:'number', req:1},
     {k:'price', l:'Total price (optional)', t:'number', show:{kind:['installment']}},
-    {k:'start', l:'First payment month', t:'month', show:{kind:['installment','monthly']}, hint:'For monthly: leave blank if it has always been there.'},
+    {k:'start', l:'First payment month', t:'month', show:{kind:['installment','monthly','weekly']}, hint:'For monthly or weekly: leave blank if it has always been there.'},
     {k:'months', l:'Number of months to pay', t:'number', show:{kind:['installment']}},
     {k:'final', l:'Last payment amount (if different)', t:'number', show:{kind:['installment']}},
-    {k:'end', l:'Last month (optional)', t:'month', show:{kind:['monthly']}, hint:'Leave blank if ongoing.'},
+    {k:'end', l:'Last month (optional)', t:'month', show:{kind:['monthly','weekly']}, hint:'Leave blank if ongoing.'},
     {k:'month', l:'Month', t:'month', show:{kind:['once']}},
     {k:'account', l:'Bank / account', t:'text', ph:'e.g. BDO, East West'},
     {k:'notes', l:'Notes', t:'text', full:1},
@@ -467,33 +486,80 @@ const SCHEMA = {
   incomes: { label:'Income', fields:[
     {k:'name', l:'Income name', t:'text', req:1, full:1, ph:'e.g. CIO (ETC)'},
     {k:'kind', l:'Kind', t:'select', opts:[['salary','My income / salary'],['share','Share from someone else (e.g. Josh)']], def:'salary', full:1, hint:'A share is subtracted from the bills you pay for that cutoff.'},
-    {k:'cutoff', l:'Cutoff', t:'select', opts:[['15th','15th cutoff'],['30th','30th cutoff']], def:'15th'},
-    {k:'amount', l:'Amount', t:'number', req:1},
-    {k:'recur', l:'How often', t:'select', opts:[['monthly','Every month'],['once','One-time (one month only)']], def:'monthly'},
-    {k:'start', l:'Starts (optional)', t:'month', show:{recur:['monthly']}},
-    {k:'end', l:'Ends (optional)', t:'month', show:{recur:['monthly']}},
+    {k:'recur', l:'How often', t:'select', opts:[['monthly','Every month'],['weekly','Every week'],['once','One-time (one month only)']], def:'monthly'},
+    {k:'amount', l:'Amount (each time)', t:'number', req:1},
+    {k:'cutoff', l:'Cutoff', t:'select', opts:[['15th','15th cutoff'],['30th','30th cutoff']], def:'15th', keep:1, show:{_sched:['semi'], recur:['monthly','once']}},
+    {k:'weekday', l:'Paid every', t:'select', opts:WD_OPTS, def:'5', show:{recur:['weekly']}},
+    {k:'due', l:'Pay day of the month', t:'text', ph:'e.g. 30th', show:{_sched:['weekly'], recur:['monthly','once']}},
+    {k:'start', l:'Starts (optional)', t:'month', show:{recur:['monthly','weekly']}},
+    {k:'end', l:'Ends (optional)', t:'month', show:{recur:['monthly','weekly']}},
     {k:'month', l:'Month', t:'month', show:{recur:['once']}},
     {k:'notes', l:'Notes', t:'text', full:1},
   ]},
   allocs: { label:'Allocation', fields:[
     {k:'name', l:'Bucket name', t:'text', req:1, ph:'e.g. Savings, Play money, Emergency fund'},
     {k:'where', l:'Where it goes (optional)', t:'text', ph:'e.g. GoTyme'},
-    {k:'cutoff', l:'Cutoff', t:'select', opts:[['15th','15th cutoff'],['30th','30th cutoff']], def:'15th'},
+    {k:'cutoff', l:'Take it from', t:'select', opts:[['15th','First pay of the month (15th)'],['30th','Last pay of the month (30th)']], def:'15th', keep:1, show:{_sched:['semi','weekly']}},
     {k:'mode', l:'How much', t:'select', opts:[['fixed','Fixed amount'],['pct','% of what is left']], def:'fixed'},
     {k:'value', l:'Amount or %', t:'number', req:1, hint:'Fixed amounts come out first, then % buckets split what remains.'},
   ]},
 };
 
+/* ---------- pay schedule ---------- */
+const SCHED = () => (data.settings && data.settings.paySchedule) || 'semi';
+const payWeekday = () => num(data.settings?.payWeekday ?? 5);
+const dim = ym => { const [y,m] = ym.split('-').map(Number); return new Date(y, m, 0).getDate(); };
+const ord = n => n + (['th','st','nd','rd'][(n%100-20)%10] || ['th','st','nd','rd'][n%100] || 'th');
+function weekdayDays(ym, wd){ const [y,m] = ym.split('-').map(Number), out = []; for (let d = 1; d <= dim(ym); d++) if (new Date(y, m-1, d).getDay() === wd) out.push(d); return out; }
+/* The pay periods inside one month: two cutoffs, one per payday (weekly), or the whole month. */
+function periods(ym){
+  const s = SCHED(), last = dim(ym), mon = MONTHS[+ym.slice(5)-1].slice(0,3);
+  if (s === 'monthly') return [{key:'m', label:'This month', short:'Month', from:1, to:last}];
+  if (s === 'weekly'){
+    const pd = weekdayDays(ym, payWeekday());
+    return pd.map((d, i) => ({key:'w'+(i+1), label:`Payday ${WD[payWeekday()].slice(0,3)}, ${mon} ${d}`, short:`${mon} ${d}`, from:i ? d : 1, to:pd[i+1] ? pd[i+1]-1 : last}));
+  }
+  return [{key:'15th', label:'15th cutoff', short:'15th', from:1, to:15}, {key:'30th', label:'30th cutoff', short:'30th', from:16, to:last}];
+}
+const dueDay = item => { const m = String(item.due || '').match(/\d{1,2}/); return m ? Math.min(31, +m[0]) : null; };
+/* Which pay period an occurrence lands in. */
+function periodFor(item, ym, day, weekly){
+  const s = SCHED(), last = dim(ym);
+  if (s === 'monthly') return 'm';
+  if (s === 'semi') return weekly ? (day <= 15 ? '15th' : '30th') : (item.cutoff === '30th' ? '30th' : '15th');
+  const d = Math.min(last, weekly ? day : (dueDay(item) ?? (item.cutoff === '30th' ? last : 15)));
+  const P = periods(ym); return (P.find(p => d >= p.from && d <= p.to) || P[0]).key;
+}
+const inRange = (x, ym) => !(x.start && idx(ym) < idx(x.start)) && !(x.end && idx(ym) > idx(x.end));
+function billOccur(b, ym){
+  if (b.kind === 'weekly'){
+    if (!inRange(b, ym)) return [];
+    return weekdayDays(ym, num(b.weekday ?? payWeekday())).map(d => ({amt:num(b.amount), day:d, wk:true, key:periodFor(b, ym, d, true)}));
+  }
+  const r = billFor(b, ym); if (!r) return [];
+  return [{...r, day:dueDay(b), wk:false, key:periodFor(b, ym, null, false)}];
+}
+function incomeOccur(x, ym){
+  if (x.recur === 'weekly'){
+    if (!inRange(x, ym)) return [];
+    return weekdayDays(ym, num(x.weekday ?? payWeekday())).map(d => ({amt:num(x.amount), day:d, key:periodFor(x, ym, d, true)}));
+  }
+  const a = incomeFor(x, ym); return a ? [{amt:a, key:periodFor(x, ym, null, false)}] : [];
+}
+const whenLabel = b => b.kind === 'weekly' || b.recur === 'weekly' ? `every ${WD[num(b.weekday ?? payWeekday())]}` : SCHED() === 'semi' ? `${b.cutoff === '30th' ? '30th' : '15th'} cutoff` : SCHED() === 'monthly' ? (b.due ? `due ${b.due}` : 'monthly') : (b.due ? `due ${b.due}` : b.cutoff === '30th' ? 'end of month' : 'mid-month');
+const paidKey = (b, ym, r) => b.id + '|' + ym + (r && r.wk ? '|' + r.day : '');
+const allocPeriod = (a, ym) => { const P = periods(ym); if (SCHED() === 'semi') return a.cutoff === '30th' ? '30th' : '15th'; return a.cutoff === '30th' ? P[P.length-1].key : P[0].key; };
+
 /* ---------- calculations ---------- */
 // Installments first, shortest term first (3, 6, 12…); within a term, fewest payments left first. Then monthly, then one-time.
-const kindRank = k => k === 'installment' ? 0 : k === 'monthly' ? 1 : 2;
+const kindRank = k => ({installment:0, monthly:1, weekly:2, once:3})[k] ?? 4;
 function billOrder(a, b){
   return kindRank(a.b.kind) - kindRank(b.b.kind)
     || (a.n || 0) - (b.n || 0)
     || ((a.n - a.k) || 0) - ((b.n - b.k) || 0)
     || a.b.name.localeCompare(b.b.name);
 }
-const groupOf = r => r.b.kind === 'installment' ? `${r.n}-month installments` : r.b.kind === 'monthly' ? 'Monthly bills' : 'One-time';
+const groupOf = r => r.b.kind === 'installment' ? `${r.n}-month installments` : r.b.kind === 'monthly' ? 'Monthly bills' : r.b.kind === 'weekly' ? 'Weekly bills' : 'One-time';
 function billFor(b, ym){
   const i = idx(ym);
   if (b.kind === 'once') return b.month === ym ? {amt:num(b.amount)} : null;
@@ -516,27 +582,28 @@ function incomeFor(x, ym){
   return num(x.amount);
 }
 function cutoff(ym, c){
-  const inc = data.incomes.filter(x => x.cutoff === c).map(x => ({x, amt:incomeFor(x, ym)})).filter(r => r.amt);
+  const inc = data.incomes.flatMap(x => incomeOccur(x, ym).filter(o => o.key === c).map(o => ({x, amt:o.amt, day:o.day})));
   const salary = inc.filter(r => r.x.kind !== 'share'), shares = inc.filter(r => r.x.kind === 'share');
-  const bills = data.bills.filter(b => b.cutoff === c).map(b => ({b, ...billFor(b, ym)})).filter(r => r.amt)
+  const bills = data.bills.flatMap(b => billOccur(b, ym).filter(o => o.key === c && o.amt).map(o => ({b, ...o})))
     .sort(billOrder);
   const incomeT = sum(salary, r => r.amt), shareT = sum(shares, r => r.amt), billT = sum(bills, r => r.amt);
   const youPay = billT - shareT, left = incomeT - youPay;
-  const al = data.allocs.filter(a => a.cutoff === c);
+  const al = data.allocs.filter(a => allocPeriod(a, ym) === c);
   const fixed = al.filter(a => a.mode !== 'pct').map(a => ({a, amt:num(a.value)}));
   const fixedT = sum(fixed, r => r.amt);
   const rest = Math.max(0, left - fixedT);
   const pct = al.filter(a => a.mode === 'pct').map(a => ({a, amt:Math.round(rest * num(a.value) / 100)}));
   const allocs = [...fixed, ...pct];
   const allocT = sum(allocs, r => r.amt);
-  const paidN = bills.filter(r => isPaid(r.b, ym)).length;
+  const paidN = bills.filter(r => isPaid(r.b, ym, r)).length;
   return {salary, shares, bills, incomeT, shareT, billT, youPay, left, allocs, allocT, unalloc:left - allocT, paidN};
 }
 function month(ym){
-  const a = cutoff(ym,'15th'), b = cutoff(ym,'30th');
+  const P = periods(ym).map(p => ({p, C:cutoff(ym, p.key)})), Cs = P.map(x => x.C), tot = k => sum(Cs, C => C[k]);
   const buckets = {};
-  [...a.allocs, ...b.allocs].forEach(r => { buckets[r.a.name] = (buckets[r.a.name]||0) + r.amt; });
-  return {a, b, income:a.incomeT+b.incomeT, youPay:a.youPay+b.youPay, bills:a.billT+b.billT, shares:a.shareT+b.shareT, left:a.left+b.left, buckets, unalloc:a.unalloc+b.unalloc};
+  Cs.flatMap(C => C.allocs).forEach(r => { buckets[r.a.name] = (buckets[r.a.name]||0) + r.amt; });
+  return {P, income:tot('incomeT'), youPay:tot('youPay'), bills:tot('billT'), shares:tot('shareT'), left:tot('left'), buckets, unalloc:tot('unalloc'),
+    billCount:sum(Cs, C => C.bills.length), paidN:tot('paidN'), allBills:Cs.flatMap(C => C.bills)};
 }
 const bucketNames = () => [...new Set(data.allocs.map(a => a.name))];
 
@@ -613,41 +680,42 @@ function viewMonth(){
       <div class="op">=</div>
       <div class="sum-col"><div class="lbl">Left this month</div><div class="big ${M.left<0?'neg':'pos'}" data-count="left" data-to="${M.left}">${money(M.left)}</div></div>
       <table class="sum-tbl"><thead><tr><th></th><th class="num">Income</th><th class="num">Expenses</th><th class="num">Left</th></tr></thead><tbody>
-        <tr><td>15th cutoff</td><td class="num">${money(M.a.incomeT)}</td><td class="num">${money(M.a.youPay)}</td><td class="num ${M.a.left<0?'neg':''}"><b>${money(M.a.left)}</b></td></tr>
-        <tr><td>30th cutoff</td><td class="num">${money(M.b.incomeT)}</td><td class="num">${money(M.b.youPay)}</td><td class="num ${M.b.left<0?'neg':''}"><b>${money(M.b.left)}</b></td></tr>
+        ${M.P.map(({p, C}) => `<tr><td>${p.label}</td><td class="num">${money(C.incomeT)}</td><td class="num">${money(C.youPay)}</td><td class="num ${C.left<0?'neg':''}"><b>${money(C.left)}</b></td></tr>`).join('')}
         <tr class="total"><td>Month total</td><td class="num">${money(M.income)}</td><td class="num">${money(M.youPay)}</td><td class="num ${M.left<0?'neg':''}">${money(M.left)}</td></tr>
       </tbody></table>
     </div>
     ${quickAdd(ym)}
     ${data.allocs.length ? `<div class="stats">${bucketStats}<div class="card stat"><div class="lbl">Free / unallocated</div><div class="num ${M.unalloc<0?'neg':''}">${money(M.unalloc)}</div></div></div>` : ''}
-    <div class="cut-grid">${cutCard(ym,'15th',M.a)}${cutCard(ym,'30th',M.b)}</div>${footer()}`;
+    <div class="cut-grid ${M.P.length > 2 ? 'many' : ''}">${M.P.map(({p, C}) => cutCard(ym, p, C)).join('')}</div>${footer()}`;
 }
 function rowActs(store, id){
   return `<span class="act"><button class="icon-btn" title="Edit" data-act="edit" data-store="${store}" data-id="${id}">${ICON.edit}</button><button class="icon-btn del" title="Delete" data-act="del" data-store="${store}" data-id="${id}">${ICON.del}</button></span>`;
 }
-function cutCard(ym, c, C){
+function cutCard(ym, p, C){
+  const c = p.key;
   const pctPaid = C.bills.length ? Math.round(C.paidN / C.bills.length * 100) : 0;
   const billLine = r => {
-    const b = r.b, paid = isPaid(b, ym);
-    const overdueMark = !paid && idx(ym) < idx(ymNow());
+    const b = r.b, paid = isPaid(b, ym, r);
+    const overdueMark = !paid && (idx(ym) < idx(ymNow()) || (ym === ymNow() && r.wk && r.day < new Date().getDate()));
     let tag = '';
     if (b.kind === 'installment') tag = `<span class="tag inst">${r.k} of ${r.n}</span>${r.k===r.n?'<span class="tag last">last payment</span>':''}`;
     else if (b.kind === 'once') tag = '<span class="tag">one-time</span>';
+    else if (b.kind === 'weekly') tag = `<span class="tag">weekly · ${WD[new Date(+ym.slice(0,4), +ym.slice(5)-1, r.day).getDay()].slice(0,3)} ${r.day}</span>`;
     const sub = [b.due && 'due ' + b.due, b.account, b.kind==='installment' && r.k < r.n && 'ends ' + ymLabel(ymAdd(b.start, r.n-1), true)].filter(Boolean).join(' · ');
-    return `<div class="line ${paid?'paid':''} ${overdueMark?'overdue':''}"><input type="checkbox" data-paid="${b.id}|${ym}" ${paid?'checked':''} title="Mark as paid"><div class="nm">${esc(b.name)}${tag}${sub?`<small>${esc(sub)}</small>`:''}</div><div class="amt editable" data-edit="bills|${b.id}" title="Tap to change amount">${money(r.amt)}</div>${rowActs('bills', b.id)}</div>`;
+    return `<div class="line ${paid?'paid':''} ${overdueMark?'overdue':''}"><input type="checkbox" data-paid="${paidKey(b, ym, r)}" ${paid?'checked':''} title="Mark as paid"><div class="nm">${esc(b.name)}${tag}${sub?`<small>${esc(sub)}</small>`:''}</div><div class="amt editable" data-edit="bills|${b.id}" title="Tap to change amount">${money(r.amt)}</div>${rowActs('bills', b.id)}</div>`;
   };
   return `<div class="card">
-    <div class="cut-head"><h2>${c} cutoff</h2><span class="badge">${C.paidN}/${C.bills.length} paid</span></div>
-    <div class="sec"><div class="sec-t">Income <a data-act="add" data-store="incomes" data-cut="${c}">${ic('plus')} Add</a></div>
-      ${C.salary.length ? C.salary.map(r => `<div class="line"><div class="nm">${esc(r.x.name)}${r.x.recur==='once'?'<span class="tag">one-time</span>':''}</div><div class="amt editable" data-edit="incomes|${r.x.id}" title="Tap to change amount">${money(r.amt)}</div>${rowActs('incomes', r.x.id)}</div>`).join('') : '<div class="empty">No income for this cutoff</div>'}
+    <div class="cut-head"><h2>${p.label}</h2><span class="badge">${C.paidN}/${C.bills.length} paid</span></div>
+    <div class="sec"><div class="sec-t">Income <a data-act="add" data-store="incomes" data-cut="${c}" data-day="${p.from}">${ic('plus')} Add</a></div>
+      ${C.salary.length ? C.salary.map(r => `<div class="line"><div class="nm">${esc(r.x.name)}${r.x.recur==='once'?'<span class="tag">one-time</span>':r.x.recur==='weekly'?'<span class="tag">weekly</span>':''}</div><div class="amt editable" data-edit="incomes|${r.x.id}" title="Tap to change amount">${money(r.amt)}</div>${rowActs('incomes', r.x.id)}</div>`).join('') : '<div class="empty">No income in this period</div>'}
     </div>
-    <div class="sec"><div class="sec-t">Bills to pay <a data-act="add" data-store="bills" data-cut="${c}" data-ym="${ym}">${ic('plus')} Add</a></div>
+    <div class="sec"><div class="sec-t">Bills to pay <a data-act="add" data-store="bills" data-cut="${c}" data-day="${p.from}" data-ym="${ym}">${ic('plus')} Add</a></div>
       ${C.bills.length ? `<div class="bar" title="${pctPaid}% paid"><span style="width:${pctPaid}%"></span></div>` + C.bills.map((r, i) => {
         const g = groupOf(r), prev = i ? groupOf(C.bills[i-1]) : null;
         if (g === prev) return billLine(r);
         const grp = C.bills.filter(x => groupOf(x) === g);
         return `<div class="grp"><span>${g}</span><span>${grp.length} · ${money(sum(grp, x => x.amt))}</span></div>` + billLine(r);
-      }).join('') : '<div class="empty">No bills this cutoff</div>'}
+      }).join('') : '<div class="empty">No bills in this period</div>'}
     </div>
     <div class="sec">
       <div class="tot"><span class="k">Total bills</span><span>${money(C.billT)}</span></div>
@@ -656,7 +724,7 @@ function cutCard(ym, c, C){
       <div class="tot"><span class="k">Income</span><span>${money(C.incomeT)}</span></div>
       <div class="tot big"><span>Left after bills</span><span class="${C.left<0?'neg':'pos'}">${money(C.left)}</span></div>
     </div>
-    <div class="sec"><div class="sec-t">Where the rest goes <a data-act="add" data-store="allocs" data-cut="${c}">${ic('plus')} Add</a></div>
+    <div class="sec"><div class="sec-t">Where the rest goes <a data-act="add" data-store="allocs" data-cut="${c==='15th'||c==='30th'?c:'15th'}">${ic('plus')} Add</a></div>
       ${C.allocs.length ? C.allocs.map(r => `<div class="line"><div class="nm">${esc(r.a.name)}${r.a.mode==='pct'?`<span class="tag">${num(r.a.value)}%</span>`:''}${r.a.where?`<small>${esc(r.a.where)}</small>`:''}</div><div class="amt">${money(r.amt)}</div>${rowActs('allocs', r.a.id)}</div>`).join('') : '<div class="empty">Add savings or play money buckets</div>'}
       <div class="tot big"><span>Free / unallocated</span><span class="${C.unalloc<0?'neg':''}">${money(C.unalloc)}</span></div>
       ${C.unalloc < 0 ? `<p class="note neg">Your buckets add up to more than what's left. Lower a bucket or an expense.</p>` : ''}
@@ -677,15 +745,17 @@ function renderCountdown(){
   const el = $('#countdown'); if (!el) return;
   if (!data.bills.length){ el.innerHTML = ''; return; }
   const D = debtInfo();
-  if (!D.last){ el.innerHTML = `<div class="cd-icon">${ic('trophy')}</div><div class="cd-side"><div class="cd-num"><b>Debt-free!</b></div><div class="cd-text">All installments are fully paid. Amazing.</div></div>`; return; }
+  if (!D.last){ el.innerHTML = `<div class="cd-icon">${ic('trophy')}</div><div class="cd-main"><div class="cd-row"><span class="cd-days"><b>Debt-free!</b></span><span class="cd-pct">100% paid</span></div><div class="cd-bar"><span style="width:100%"></span></div><div class="cd-text">All installments are fully paid. You manifested it.</div></div>`; return; }
   const today = new Date(); today.setHours(0,0,0,0);
   const days = Math.max(0, Math.ceil((D.last - today) / 86400000));
   const mos = (D.last.getFullYear() - today.getFullYear()) * 12 + D.last.getMonth() - today.getMonth();
   const human = mos >= 12 ? `${Math.floor(mos/12)} yr${mos>=24?'s':''}${mos%12?` ${mos%12} mo${mos%12>1?'s':''}`:''}` : `${mos} mo${mos!==1?'s':''}`;
   el.innerHTML = `<div class="cd-icon">${ic('hourglass')}</div>
-    <div class="cd-num"><b data-count="cd" data-to="${days}">${days.toLocaleString()}</b><span>days to<br>debt-free</span></div>
-    <div class="cd-side"><div class="cd-text"><b>${D.pct}% paid</b> · ${money(D.owed)} to go · ${D.payLeft} payments · done by <b>${D.last.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</b> (~${human})</div>
-    <div class="bar"><span style="width:${D.pct}%"></span></div></div>`;
+    <div class="cd-main">
+      <div class="cd-row"><span class="cd-days"><b data-count="cd" data-to="${days}">${days.toLocaleString()}</b> days to debt-free</span><span class="cd-pct">${D.pct}% paid</span></div>
+      <div class="cd-bar" role="progressbar" aria-valuenow="${D.pct}" aria-valuemin="0" aria-valuemax="100"><span style="width:${D.pct}%"></span></div>
+      <div class="cd-text">${money(D.owed)} to go · ${D.payLeft} payments left · debt-free by <b>${D.last.toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'})}</b> (about ${human})</div>
+    </div>`;
 }
 
 /* ---------- Dashboard (year summary) ---------- */
@@ -700,14 +770,19 @@ function viewDash(){
   const y = ui.year, now = ymNow(), [ymin, ymax] = yearsRange();
   const rows = MONTHS.map((m,i) => { const ym = y + '-' + pad(i+1); return {ym, m, M:month(ym)}; });
   const T = {income:sum(rows,r=>r.M.income), exp:sum(rows,r=>r.M.youPay), bills:sum(rows,r=>r.M.bills), left:sum(rows,r=>r.M.left)};
-  const cut = c => ({inc:sum(rows,r=>r.M[c].incomeT), exp:sum(rows,r=>r.M[c].youPay), left:sum(rows,r=>r.M[c].left)});
-  const A = cut('a'), B = cut('b');
+  const sched = SCHED(), split = {};
+  rows.forEach(r => r.M.P.forEach(({p, C}) => {
+    const k = sched === 'semi' ? p.label : sched === 'weekly' ? 'Average payday' : 'Average month';
+    const g = split[k] ||= {inc:0, exp:0, left:0, n:0}; g.inc += C.incomeT; g.exp += C.youPay; g.left += C.left; g.n++;
+  }));
+  const avg = sched !== 'semi';
+  const splitTitle = sched === 'semi' ? '15th vs 30th cutoff' : sched === 'weekly' ? `Per payday (${Object.values(split)[0]?.n || 0} paydays in ${y})` : 'Per month';
   // paid / unpaid amounts this year
   let paidAmt = 0, unpaidAmt = 0, overdueAmt = 0;
   const perBill = {};
-  rows.forEach(r => [...r.M.a.bills, ...r.M.b.bills].forEach(x => {
+  rows.forEach(r => r.M.allBills.forEach(x => {
     perBill[x.b.id] = (perBill[x.b.id] || 0) + x.amt;
-    if (isPaid(x.b, r.ym)) paidAmt += x.amt; else { unpaidAmt += x.amt; if (idx(r.ym) < idx(now)) overdueAmt += x.amt; }
+    if (isPaid(x.b, r.ym, x)) paidAmt += x.amt; else { unpaidAmt += x.amt; if (idx(r.ym) < idx(now)) overdueAmt += x.amt; }
   }));
   const top = Object.entries(perBill).map(([id, amt]) => ({b:data.bills.find(x => x.id === id), amt})).filter(x => x.b).sort((a,b) => b.amt - a.amt).slice(0,6);
   const topMax = top[0]?.amt || 1;
@@ -735,10 +810,9 @@ function viewDash(){
           <span class="c-left ${r.M.left<0?'neg':''}">${Math.abs(r.M.left)>=1000?(r.M.left<0?'−':'')+Math.round(Math.abs(r.M.left)/1000)+'k':money(r.M.left)}</span>
           <span class="c-m">${r.m.slice(0,3)}</span></button>`).join('')}</div>
         <p class="note">Tap a month to open it. The number above each month is what's left.</p></div>
-      <div class="card pad"><div class="sec-t">15th vs 30th cutoff</div>
+      <div class="card pad"><div class="sec-t">${splitTitle}</div>
         <table class="mini-tbl"><thead><tr><th></th><th class="num">Income</th><th class="num">Expenses</th><th class="num">Left</th></tr></thead><tbody>
-          <tr><td>15th</td><td class="num">${money(A.inc)}</td><td class="num">${money(A.exp)}</td><td class="num ${A.left<0?'neg':''}"><b>${money(A.left)}</b></td></tr>
-          <tr><td>30th</td><td class="num">${money(B.inc)}</td><td class="num">${money(B.exp)}</td><td class="num ${B.left<0?'neg':''}"><b>${money(B.left)}</b></td></tr>
+          ${Object.entries(split).map(([k, g]) => { const d = avg ? g.n : 1, f = v => money(Math.round(v / d)); return `<tr><td>${k}</td><td class="num">${f(g.inc)}</td><td class="num">${f(g.exp)}</td><td class="num ${g.left<0?'neg':''}"><b>${f(g.left)}</b></td></tr>`; }).join('')}
         </tbody></table>
         <div class="sec-t" style="margin-top:18px">Biggest expenses in ${y}</div>
         ${top.length ? top.map(t => `<div class="hbar"><div class="hb-top"><span>${esc(t.b.name)}</span><b>${money(t.amt)}</b></div><div class="bar"><span style="width:${t.amt/topMax*100}%"></span></div></div>`).join('') : '<div class="empty">No expenses this year</div>'}
@@ -747,7 +821,7 @@ function viewDash(){
     <div class="dash-grid">
       <div class="card"><div class="cut-head"><h2>Month by month</h2></div><div class="tbl-wrap"><table>
         <thead><tr><th>Month</th><th class="num">Income</th><th class="num">Expenses</th><th class="num">Left</th><th>Bills paid</th></tr></thead>
-        <tbody>${rows.map(r => { const nb = r.M.a.bills.length + r.M.b.bills.length, np = r.M.a.paidN + r.M.b.paidN; return `<tr class="click ${r.ym===now?'cur':''}" data-act="goto" data-v="${r.ym}">
+        <tbody>${rows.map(r => { const nb = r.M.billCount, np = r.M.paidN; return `<tr class="click ${r.ym===now?'cur':''}" data-act="goto" data-v="${r.ym}">
           <td>${r.m}</td><td class="num">${money(r.M.income)}</td><td class="num">${money(r.M.youPay)}</td><td class="num ${r.M.left<0?'neg':''}"><b>${money(r.M.left)}</b></td>
           <td>${nb ? `<span class="tag ${np===nb?'share':idx(r.ym)<idx(now)?'late':''}">${np}/${nb}</span>` : '—'}</td></tr>`; }).join('')}
           <tr class="total"><td>Total</td><td class="num">${money(T.income)}</td><td class="num">${money(T.exp)}</td><td class="num">${money(T.left)}</td><td></td></tr>
@@ -786,17 +860,17 @@ function viewPaid(){
     <div class="card" style="margin-bottom:18px"><div class="cut-head"><h2>${ic('trophy')} Fully paid</h2><span class="badge">${done.length + onceDone.length}</span></div>
       ${done.length || onceDone.length ? `<div class="tbl-wrap"><table>
         <thead><tr><th>Item</th><th>Months paid</th><th class="num">No. of months</th><th class="num">Installment amount</th><th class="num">Total price</th><th class="num">Total paid</th></tr></thead>
-        <tbody>${done.map(r => `<tr><td><b>${esc(r.b.name)}</b><div class="sub">${esc([r.b.account, r.b.cutoff + ' cutoff'].filter(Boolean).join(' · '))}</div></td>
+        <tbody>${done.map(r => `<tr><td><b>${esc(r.b.name)}</b><div class="sub">${esc([r.b.account, whenLabel(r.b)].filter(Boolean).join(' · '))}</div></td>
           <td>${range(r.st.firstYm, r.st.lastYm)}</td><td class="num">${r.st.n}</td><td class="num">${money(num(r.b.amount))}${num(r.b.final)>0?`<div class="sub">last: ${money(num(r.b.final))}</div>`:''}</td>
           <td class="num">${money(r.st.price)}</td><td class="num"><b>${money(r.st.total)}</b></td></tr>`).join('')}
-        ${onceDone.map(b => `<tr><td><b>${esc(b.name)}</b><div class="sub">one-time · ${b.cutoff} cutoff</div></td><td>${ymLabel(b.month)}</td><td class="num">1</td><td class="num">—</td><td class="num">${money(num(b.amount))}</td><td class="num"><b>${money(num(b.amount))}</b></td></tr>`).join('')}
+        ${onceDone.map(b => `<tr><td><b>${esc(b.name)}</b><div class="sub">one-time · ${whenLabel(b)}</div></td><td>${ymLabel(b.month)}</td><td class="num">1</td><td class="num">—</td><td class="num">${money(num(b.amount))}</td><td class="num"><b>${money(num(b.amount))}</b></td></tr>`).join('')}
         </tbody></table></div>` : `<div class="pad empty">Nothing fully paid yet. Tick an installment's last payment in Monthly and it lands here.</div>`}
     </div>
     <div class="card"><div class="cut-head"><h2>Installments in progress</h2><span class="badge">${running.length}</span></div>
       ${running.length ? `<div class="tbl-wrap"><table>
         <thead><tr><th>Item</th><th>Progress</th><th>Months paid</th><th class="num">Should be paid by now</th><th>Status</th><th class="num">Installment</th><th class="num">Total price</th><th class="num">Paid so far</th><th class="num">Remaining</th></tr></thead>
         <tbody>${running.map(r => { const st = r.st, pct = Math.round(st.paidN / st.n * 100); return `<tr>
-          <td><b>${esc(r.b.name)}</b><div class="sub">${esc([r.b.account, r.b.cutoff + ' cutoff', 'ends ' + ymLabel(st.lastYm, true)].filter(Boolean).join(' · '))}</div></td>
+          <td><b>${esc(r.b.name)}</b><div class="sub">${esc([r.b.account, whenLabel(r.b), 'ends ' + ymLabel(st.lastYm, true)].filter(Boolean).join(' · '))}</div></td>
           <td style="min-width:150px"><div class="sub" style="margin-bottom:3px"><b style="color:var(--text)">${st.paidN} of ${st.n}</b> months</div><div class="bar"><span style="width:${pct}%"></span></div></td>
           <td>${st.paidN ? range(st.firstPaid, st.lastPaid) : 'none yet'}</td>
           <td class="num">${st.expected} of ${st.n}</td>
@@ -811,61 +885,69 @@ function viewPaid(){
 
 /* ---------- Expenses list ---------- */
 function viewBills(){
-  const f = ui.billFilter, c = ui.billCut, now = ymNow();
+  const f = ui.billFilter, c = ui.billCut, now = ymNow(), semi = SCHED() === 'semi';
   const status = b => {
     if (b.kind === 'once') return idx(b.month||now) < idx(now) ? 'done' : 'active';
     if (b.kind === 'installment') return (b.start && num(b.months) && idx(ymAdd(b.start, num(b.months)-1)) < idx(now)) ? 'done' : 'active';
     return (b.end && idx(b.end) < idx(now)) ? 'done' : 'active';
   };
-  const rows = data.bills.filter(b => (f==='all' ? status(b)==='active' : f==='done' ? status(b)==='done' : b.kind===f && status(b)==='active') && (c==='all' || b.cutoff===c))
-    .sort((a,b) => a.cutoff.localeCompare(b.cutoff) || a.name.localeCompare(b.name));
+  const rows = data.bills.filter(b => (f==='all' ? status(b)==='active' : f==='done' ? status(b)==='done' : b.kind===f && status(b)==='active') && (!semi || c==='all' || (b.kind !== 'weekly' && b.cutoff===c)))
+    .sort((a,b) => kindRank(a.kind) - kindRank(b.kind) || (num(a.months)||0) - (num(b.months)||0) || a.name.localeCompare(b.name));
   const sched = b => b.kind==='installment' ? `${ymLabel(b.start,true)} → ${b.start&&num(b.months)?ymLabel(ymAdd(b.start,num(b.months)-1),true):'?'} (${num(b.months)} mos)`
-    : b.kind==='once' ? ymLabel(b.month,true) : (b.start?'from '+ymLabel(b.start,true):'every month') + (b.end?' until '+ymLabel(b.end,true):'');
-  const label = {installment:'Installment', monthly:'Monthly', once:'One-time'};
+    : b.kind==='once' ? ymLabel(b.month,true) : (b.start?'from '+ymLabel(b.start,true):(b.kind==='weekly'?'every week':'every month')) + (b.end?' until '+ymLabel(b.end,true):'');
+  const label = {installment:'Installment', monthly:'Monthly', weekly:'Weekly', once:'One-time'};
   return `<div class="head"><h1>Expenses</h1><button class="btn primary" data-act="add" data-store="bills">${ic('plus')} Add expense</button></div>
     <div class="tools">
-      <select id="bf">${[['all','All active'],['installment','Installments'],['monthly','Monthly'],['once','One-time'],['done','Finished']].map(([v,l])=>`<option value="${v}" ${f===v?'selected':''}>${l}</option>`).join('')}</select>
-      <select id="bc">${[['all','Both cutoffs'],['15th','15th cutoff'],['30th','30th cutoff']].map(([v,l])=>`<option value="${v}" ${c===v?'selected':''}>${l}</option>`).join('')}</select>
+      <select id="bf">${[['all','All active'],['installment','Installments'],['monthly','Monthly'],['weekly','Weekly'],['once','One-time'],['done','Finished']].map(([v,l])=>`<option value="${v}" ${f===v?'selected':''}>${l}</option>`).join('')}</select>
+      ${semi ? `<select id="bc">${[['all','Both cutoffs'],['15th','15th cutoff'],['30th','30th cutoff']].map(([v,l])=>`<option value="${v}" ${c===v?'selected':''}>${l}</option>`).join('')}</select>` : ''}
     </div>
     <div class="card">${rows.length ? `<div class="tbl-wrap"><table>
-      <thead><tr><th>Expense</th><th>Type</th><th>Cutoff</th><th class="num">Amount</th><th>Schedule</th><th></th></tr></thead>
+      <thead><tr><th>Expense</th><th>Type</th><th>When</th><th class="num">Amount</th><th>Schedule</th><th></th></tr></thead>
       <tbody>${rows.map(b => `<tr><td><b>${esc(b.name)}</b>${(b.account||b.notes)?`<div class="sub">${esc([b.account,b.notes].filter(Boolean).join(' · '))}</div>`:''}</td>
-        <td>${label[b.kind]}</td><td>${b.cutoff}${b.due?` <span class="tag">due ${esc(b.due)}</span>`:''}</td><td class="num">${money(num(b.amount))}</td><td>${sched(b)}</td>
+        <td>${label[b.kind]}</td><td>${whenLabel(b)}${b.due && semi && b.kind!=='weekly'?` <span class="tag">due ${esc(b.due)}</span>`:''}</td><td class="num">${money(num(b.amount))}${b.kind==='weekly'?'<div class="sub">per week</div>':''}</td><td>${sched(b)}</td>
         <td class="act"><button class="icon-btn" data-act="edit" data-store="bills" data-id="${b.id}" title="Edit">${ICON.edit}</button><button class="icon-btn del" data-act="del" data-store="bills" data-id="${b.id}" title="Delete">${ICON.del}</button></td></tr>`).join('')}
       </tbody></table></div>` : '<div class="pad empty">Nothing here yet.</div>'}</div>${footer()}`;
 }
 
 /* ---------- Income & savings ---------- */
 function viewIncome(){
-  const byCut = (arr, c) => arr.filter(x => x.cutoff === c);
-  const incRows = c => byCut(data.incomes, c).map(x => `<tr><td><b>${esc(x.name)}</b>${x.kind==='share'?'<span class="tag share">share</span>':''}${x.notes?`<div class="sub">${esc(x.notes)}</div>`:''}</td>
-    <td>${x.recur==='once'?ymLabel(x.month,true):(x.start?'from '+ymLabel(x.start,true):'every month')+(x.end?' until '+ymLabel(x.end,true):'')}</td>
-    <td class="num">${money(num(x.amount))}</td><td class="act"><button class="icon-btn" data-act="edit" data-store="incomes" data-id="${x.id}">${ICON.edit}</button><button class="icon-btn del" data-act="del" data-store="incomes" data-id="${x.id}">${ICON.del}</button></td></tr>`).join('');
-  const alRows = c => byCut(data.allocs, c).map(a => `<tr><td><b>${esc(a.name)}</b>${a.where?`<div class="sub">${esc(a.where)}</div>`:''}</td>
+  const sch = SCHED(), wd = payWeekday(), ym = ymNow();
+  const opt = (v, t, d) => `<button class="sched-opt ${sch===v?'on':''}" data-act="sched" data-v="${v}"><b>${t}</b><span>${d}</span></button>`;
+  const perMonth = x => x.recur === 'weekly' ? num(x.amount) * weekdayDays(ym, num(x.weekday ?? wd)).length : x.recur === 'once' ? 0 : num(x.amount);
+  const incRows = data.incomes.map(x => `<tr><td><b>${esc(x.name)}</b>${x.kind==='share'?'<span class="tag share">share</span>':''}${x.notes?`<div class="sub">${esc(x.notes)}</div>`:''}</td>
+    <td>${x.recur==='once' ? 'One-time · ' + ymLabel(x.month,true) : x.recur==='weekly' ? 'Weekly' : 'Monthly'}</td><td>${x.recur==='once' ? (sch==='semi' ? x.cutoff + ' cutoff' : '—') : whenLabel(x)}${x.start||x.end?`<div class="sub">${x.start?'from '+ymLabel(x.start,true):''}${x.end?' until '+ymLabel(x.end,true):''}</div>`:''}</td>
+    <td class="num">${money(num(x.amount))}${x.recur==='weekly'?'<div class="sub">per week</div>':''}</td>
+    <td class="act"><button class="icon-btn" data-act="edit" data-store="incomes" data-id="${x.id}">${ICON.edit}</button><button class="icon-btn del" data-act="del" data-store="incomes" data-id="${x.id}">${ICON.del}</button></td></tr>`).join('');
+  const alRows = data.allocs.map(a => `<tr><td><b>${esc(a.name)}</b>${a.where?`<div class="sub">${esc(a.where)}</div>`:''}</td>
+    <td>${sch==='monthly' ? 'Monthly' : a.cutoff==='30th' ? (sch==='semi'?'30th cutoff':'Last payday') : (sch==='semi'?'15th cutoff':'First payday')}</td>
     <td>${a.mode==='pct'?'% of what is left':'Fixed'}</td><td class="num">${a.mode==='pct'?num(a.value)+'%':money(num(a.value))}</td>
     <td class="act"><button class="icon-btn" data-act="edit" data-store="allocs" data-id="${a.id}">${ICON.edit}</button><button class="icon-btn del" data-act="del" data-store="allocs" data-id="${a.id}">${ICON.del}</button></td></tr>`).join('');
-  const block = c => `<div class="card"><div class="cut-head"><h2>${c} cutoff</h2></div>
-    <div class="sec"><div class="sec-t">Income <a data-act="add" data-store="incomes" data-cut="${c}">${ic('plus')} Add</a></div>
-      ${byCut(data.incomes,c).length?`<div class="tbl-wrap"><table><tbody>${incRows(c)}</tbody></table></div>`:'<div class="empty">No income yet</div>'}</div>
-    <div class="sec"><div class="sec-t">Savings, play money &amp; other buckets <a data-act="add" data-store="allocs" data-cut="${c}">${ic('plus')} Add</a></div>
-      ${byCut(data.allocs,c).length?`<div class="tbl-wrap"><table><tbody>${alRows(c)}</tbody></table></div>`:'<div class="empty">No buckets yet</div>'}</div></div>`;
+  const myIncome = sum(data.incomes.filter(x => x.kind !== 'share'), perMonth);
   return `<div class="head"><h1>Income &amp; Savings</h1><button class="btn primary" data-act="add" data-store="incomes">${ic('plus')} Add income</button><button class="btn" data-act="add" data-store="allocs">${ic('plus')} Add bucket</button></div>
-    <div class="two">${block('15th')}${block('30th')}</div>
+    <div class="card pad" style="margin-bottom:16px"><div class="sec-t">How often do you get paid?</div>
+      <div class="sched">${opt('semi','Twice a month','15th & 30th cutoffs')}${opt('weekly','Every week','One card per payday')}${opt('monthly','Once a month','One payday a month')}</div>
+      ${sch==='weekly' ? `<label class="sched-day">Payday is every <select id="payday">${WD.map((d,i) => `<option value="${i}" ${i===wd?'selected':''}>${d}</option>`).join('')}</select></label>` : ''}
+      <p class="note">This changes how each month is split. Your income and bills stay the same. Weekly income and bills work with any of these.</p></div>
+    <div class="card" style="margin-bottom:16px"><div class="cut-head"><h2>Income</h2><span class="badge">≈ ${money(myIncome)} this month</span></div>
+      ${data.incomes.length ? `<div class="tbl-wrap"><table><thead><tr><th>Name</th><th>How often</th><th>When</th><th class="num">Amount</th><th></th></tr></thead><tbody>${incRows}</tbody></table></div>` : '<div class="pad empty">No income yet</div>'}</div>
+    <div class="card"><div class="cut-head"><h2>Savings, play money &amp; other buckets</h2></div>
+      ${data.allocs.length ? `<div class="tbl-wrap"><table><thead><tr><th>Bucket</th><th>From</th><th>Type</th><th class="num">Amount</th><th></th></tr></thead><tbody>${alRows}</tbody></table></div>` : '<div class="pad empty">No buckets yet</div>'}</div>
     <p class="note">How buckets work: after bills are paid, fixed amounts (like savings) come out first, then % buckets (like play money) split whatever remains. Anything left over shows as "Free".</p>${footer()}`;
 }
 
 /* ---------- interactive bits ---------- */
 const qa = {cutoff:null, kind:'once', months:3};
 function quickAdd(ym){
-  if (!qa.cutoff) qa.cutoff = (ym === ymNow() && new Date().getDate() > 15) ? '30th' : '15th';
+  const P = periods(ym), today = new Date().getDate();
+  if (!P.some(p => p.key === qa.cutoff)) qa.cutoff = (ym === ymNow() ? (P.find(p => today >= p.from && today <= p.to) || P[0]) : P[0]).key;
   const seg = (key, opts) => `<div class="seg" role="group">${opts.map(([v,l]) => `<button type="button" class="${qa[key]===v?'on':''}" data-seg="${key}" data-val="${v}">${l}</button>`).join('')}</div>`;
   return `<div class="card quick">
     <div class="q-title">${ic('zap','lg')} Quick add an expense to ${ymLabel(ym)}</div>
     <form id="qa" autocomplete="off">
       <input name="qname" class="q-name" placeholder="What is it? e.g. Meralco, Shopee" aria-label="Expense name">
       <div class="q-amt-wrap"><span>${esc(CUR)}</span><input name="amount" class="q-amt" inputmode="decimal" placeholder="0" aria-label="Amount"></div>
-      ${seg('cutoff', [['15th','15th'],['30th','30th']])}
-      ${seg('kind', [['once','One-time'],['monthly','Every month'],['installment','Installment']])}
+      ${P.length > 1 ? seg('cutoff', P.map(p => [p.key, p.short])) : ''}
+      ${seg('kind', [['once','One-time'],['weekly','Every week'],['monthly','Every month'],['installment','Installment']])}
       <label class="q-months" ${qa.kind==='installment'?'':'hidden'}>for <input name="months" type="number" min="2" value="${qa.months}"> months</label>
       <button class="btn primary" type="submit">Add</button>
     </form>
@@ -874,12 +956,13 @@ function quickAdd(ym){
 }
 function qaImpact(){
   const f = $('#qa'); if (!f) return;
-  const amt = num(f.amount.value), ym = ui.ym, c = qa.cutoff, C = cutoff(ym, c), el = $('#qi');
+  const amt = num(f.amount.value), ym = ui.ym, c = qa.cutoff, C = cutoff(ym, c), el = $('#qi'), pl = periods(ym).find(p => p.key === c);
+  const times = qa.kind === 'weekly' ? weekdayDays(ym, payWeekday()).length : 1;
   if (!amt){ el.className = 'q-impact'; el.innerHTML = 'Type an amount to see how much will be left.'; return; }
   const after = C.left - amt, M = month(ym);
-  let span = qa.kind === 'once' ? 'only this month' : qa.kind === 'monthly' ? `every month from ${ymLabel(ym, true)}` : `${num(f.months.value)||qa.months} months · ${ymLabel(ym,true)} → ${ymLabel(ymAdd(ym,(num(f.months.value)||qa.months)-1),true)} · ${money(amt*(num(f.months.value)||qa.months))} total`;
+  let span = qa.kind === 'once' ? 'only this month' : qa.kind === 'weekly' ? `every ${WD[payWeekday()]} · ${times}× this month = ${money(amt*times)}` : qa.kind === 'monthly' ? `every month from ${ymLabel(ym, true)}` : `${num(f.months.value)||qa.months} months · ${ymLabel(ym,true)} → ${ymLabel(ymAdd(ym,(num(f.months.value)||qa.months)-1),true)} · ${money(amt*(num(f.months.value)||qa.months))} total`;
   el.className = 'q-impact ' + (after < 0 ? 'bad' : after < C.left * 0.25 ? 'meh' : 'ok');
-  el.innerHTML = `${c} cutoff left: <b>${money(C.left)}</b> ${ic('arrow-right')} <b>${money(after)}</b> &nbsp;·&nbsp; month left: ${money(M.left)} ${ic('arrow-right')} <b>${money(M.left - amt)}</b><br><small>${span}${after < 0 ? ' · ' + ic('triangle-alert') + ' this puts the cutoff in the negative' : ''}</small>`;
+  el.innerHTML = `${qa.kind === 'weekly' ? '' : `${pl ? pl.label : 'Period'} left: <b>${money(C.left)}</b> ${ic('arrow-right')} <b>${money(after)}</b> &nbsp;·&nbsp; `}month left: ${money(M.left)} ${ic('arrow-right')} <b>${money(M.left - amt*times)}</b><br><small>${span}${after < 0 ? ' · ' + ic('triangle-alert') + ' this puts the cutoff in the negative' : ''}</small>`;
 }
 function debtCard(){
   const now = ymNow();
@@ -919,7 +1002,8 @@ function afterRender(){
       if (!name){ toast('Give it a name first'); f.qname.focus(); return; }
       if (!amount){ toast('Enter an amount'); f.amount.focus(); return; }
       const ym = ui.ym;
-      data.bills.push({id:uid(), name, kind:qa.kind, cutoff:qa.cutoff, due:'', amount, price:qa.kind==='installment'?amount*months:'', start:qa.kind==='once'?'':ym, months:qa.kind==='installment'?months:'', final:'', end:'', month:qa.kind==='once'?ym:'', account:'', notes:''});
+      const pl = periods(ym).find(p => p.key === qa.cutoff) || periods(ym)[0];
+      data.bills.push({id:uid(), name, kind:qa.kind, cutoff:(qa.cutoff === '30th' ? '30th' : '15th'), due:(SCHED() === 'weekly' ? ord(pl.from) : ''), weekday:String(payWeekday()), amount, price:qa.kind==='installment'?amount*months:'', start:qa.kind==='once'?'':ym, months:qa.kind==='installment'?months:'', final:'', end:'', month:qa.kind==='once'?ym:'', account:'', notes:''});
       persist(); render(); toast(`Added ${name} · ${money(amount)}`);
       const nf = $('#qa'); if (nf) nf.qname.focus();
     });
@@ -1128,7 +1212,7 @@ function fieldHTML(f, v){
 }
 function openForm(store, id, preset={}){
   const sc = SCHEMA[store], rec = id ? data[store].find(r => r.id === id) : null;
-  const def = f => rec ? (rec[f.k] ?? '') : preset[f.k] ?? (f.def ?? '');
+  const def = f => rec ? (rec[f.k] ?? (f.k === 'weekday' ? String(payWeekday()) : '')) : preset[f.k] ?? (f.k === 'weekday' ? String(payWeekday()) : f.def ?? '');
   showModal(`<form id="frm" novalidate><h2>${rec?'Edit':'Add'} ${sc.label.toLowerCase()}</h2>
     <div class="fgrid">${sc.fields.map(f => fieldHTML(f, def(f))).join('')}${store==='bills'?'<div class="preview" id="pv"></div>':''}</div>
     <div class="mact">${rec?`<button type="button" class="btn danger" style="margin-right:auto" data-act="del" data-store="${store}" data-id="${rec.id}">Delete</button>`:''}
@@ -1137,7 +1221,7 @@ function openForm(store, id, preset={}){
   const sync = () => {
     form.querySelectorAll('[data-show]').forEach(el => {
       const cond = JSON.parse(el.dataset.show);
-      el.style.display = Object.entries(cond).every(([k, vals]) => vals.includes(form.elements[k].value)) ? '' : 'none';
+      el.style.display = Object.entries(cond).every(([k, vals]) => vals.includes(k === '_sched' ? SCHED() : form.elements[k].value)) ? '' : 'none';
     });
     if (store === 'bills'){
       const v = k => form.elements[k]?.value;
@@ -1147,7 +1231,8 @@ function openForm(store, id, preset={}){
         const n = num(v('months')), a = num(v('amount'));
         if (v('start') && n) txt = `Payments run ${ymLabel(v('start'))} → ${ymLabel(ymAdd(v('start'), n-1))}` + (a ? ` · total ${money(a*(n-1) + (num(v('final'))||a))}` : '');
         else txt = 'Tip: enter the total price and number of months and the amount per payment fills in.';
-      } else if (v('kind') === 'monthly') txt = `Shows up every month on the ${v('cutoff')} cutoff` + (v('start') ? ' from ' + ymLabel(v('start')) : '') + (v('end') ? ' until ' + ymLabel(v('end')) : '') + '.';
+      } else if (v('kind') === 'monthly') txt = `Shows up every month` + (SCHED() === 'semi' ? ` on the ${v('cutoff')} cutoff` : '') + (v('start') ? ' from ' + ymLabel(v('start')) : '') + (v('end') ? ' until ' + ymLabel(v('end')) : '') + '.';
+      else if (v('kind') === 'weekly') txt = `Shows up every ${WD[num(v('weekday'))]} (4 or 5 times a month)` + (v('start') ? ' from ' + ymLabel(v('start')) : '') + (v('end') ? ' until ' + ymLabel(v('end')) : '') + '.';
       else txt = v('month') ? `Only in ${ymLabel(v('month'))}.` : 'Pick the month it applies to.';
       $('#pv').textContent = txt;
     }
@@ -1174,7 +1259,7 @@ function openForm(store, id, preset={}){
     const obj = rec ? {...rec} : {id: uid()};
     for (const f of sc.fields){
       const val = form.elements[f.k].value;
-      obj[f.k] = !visible(f) ? '' : f.t === 'number' ? (val === '' ? '' : num(val)) : String(val).trim();
+      obj[f.k] = (!visible(f) && !f.keep) ? '' : f.t === 'number' ? (val === '' ? '' : num(val)) : String(val).trim();
     }
     if (rec){ const i = data[store].findIndex(r => r.id === rec.id); data[store][i] = obj; } else data[store].push(obj);
     persist(); closeModal(); render(); toast(`${sc.label} ${rec?'updated':'added'}`);
@@ -1216,6 +1301,7 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   const {act, store, id, v} = b.dataset;
   if (act === 'view') go({view:v});
+  else if (act === 'sched'){ data.settings.paySchedule = v; qa.cutoff = null; persist(); render(); toast(`Pay schedule: ${({semi:'twice a month', weekly:'every week', monthly:'once a month'})[v]}`); }
   else if (act === 'dashhome') go({view:'dash', year:Number(ymNow().slice(0,4))});
   else if (act === 'ym') go({ym:v});
   else if (act === 'year') go({year:Number(v)});
@@ -1224,7 +1310,8 @@ document.addEventListener('click', e => {
   else if (act === 'back'){ if (navDepth > 0) history.back(); else go({view:'month', ym:ymNow()}); }
   else if (act === 'add'){
     const preset = {};
-    if (b.dataset.cut) preset.cutoff = b.dataset.cut;
+    if (b.dataset.cut === '15th' || b.dataset.cut === '30th') preset.cutoff = b.dataset.cut;
+    else if (b.dataset.day && SCHED() === 'weekly') preset.due = ord(+b.dataset.day);
     if (store === 'bills'){ const ym = b.dataset.ym || ymNow(); preset.start = ym; preset.month = ym; }
     openForm(store, null, preset);
   }
@@ -1248,12 +1335,13 @@ document.addEventListener('change', e => {
     persist(); render();
     if (el.checked){
       const b = data.bills.find(x => x.id === bid), r = b && billFor(b, ym);
-      const C = cutoff(ym, b.cutoff);
-      if (C.bills.length && C.paidN === C.bills.length){ celebrate(); toast(`${b.cutoff} cutoff fully paid for ${ymLabel(ym, true)}!`, 'party-popper'); }
+      const day = el.dataset.paid.split('|')[2], key = periodFor(b, ym, day ? +day : null, !!day), C = cutoff(ym, key), pl = periods(ym).find(p => p.key === key);
+      if (C.bills.length && C.paidN === C.bills.length){ celebrate(); toast(`${pl ? pl.label : 'This period'} fully paid for ${ymLabel(ym, true)}!`, 'party-popper'); }
       else if (r && r.k && r.k === r.n){ celebrate(); toast(`${b.name} is fully paid off!`, 'party-popper'); }
       else toast(`${b.name} paid · ${C.bills.length - C.paidN} left this cutoff`, 'circle-check');
     }
   }
+  else if (el.id === 'payday'){ data.settings.payWeekday = Number(el.value); qa.cutoff = null; persist(); render(); }
   else if (el.id === 'ysel') go({year:Number(el.value)});
   else if (el.id === 'bf'){ ui.billFilter = el.value; render(); }
   else if (el.id === 'bc'){ ui.billCut = el.value; render(); }
