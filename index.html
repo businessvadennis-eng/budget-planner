@@ -212,6 +212,8 @@ main{max-width:1180px;padding:22px 28px 70px}
 .sec-t a{cursor:pointer;color:var(--accent);text-transform:none;letter-spacing:0;font-weight:600}
 .line{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px dashed var(--border)}
 .line:first-of-type{border-top:0}
+.grp{display:flex;justify-content:space-between;gap:8px;margin:12px 0 2px;padding:4px 8px;border-radius:6px;background:var(--surface-2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.grp + .line{border-top:0}
 .line .nm{flex:1;min-width:0}
 .line .nm small{display:block;color:var(--muted);font-size:12px}
 .line .amt{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
@@ -420,6 +422,15 @@ const SCHEMA = {
 };
 
 /* ---------- calculations ---------- */
+// Installments first, shortest term first (3, 6, 12…); within a term, fewest payments left first. Then monthly, then one-time.
+const kindRank = k => k === 'installment' ? 0 : k === 'monthly' ? 1 : 2;
+function billOrder(a, b){
+  return kindRank(a.b.kind) - kindRank(b.b.kind)
+    || (a.n || 0) - (b.n || 0)
+    || ((a.n - a.k) || 0) - ((b.n - b.k) || 0)
+    || a.b.name.localeCompare(b.b.name);
+}
+const groupOf = r => r.b.kind === 'installment' ? `${r.n}-month installments` : r.b.kind === 'monthly' ? 'Monthly bills' : 'One-time';
 function billFor(b, ym){
   const i = idx(ym);
   if (b.kind === 'once') return b.month === ym ? {amt:num(b.amount)} : null;
@@ -445,7 +456,7 @@ function cutoff(ym, c){
   const inc = data.incomes.filter(x => x.cutoff === c).map(x => ({x, amt:incomeFor(x, ym)})).filter(r => r.amt);
   const salary = inc.filter(r => r.x.kind !== 'share'), shares = inc.filter(r => r.x.kind === 'share');
   const bills = data.bills.filter(b => b.cutoff === c).map(b => ({b, ...billFor(b, ym)})).filter(r => r.amt)
-    .sort((a,b) => (a.b.kind==='installment'?0:a.b.kind==='monthly'?1:2) - (b.b.kind==='installment'?0:b.b.kind==='monthly'?1:2));
+    .sort(billOrder);
   const incomeT = sum(salary, r => r.amt), shareT = sum(shares, r => r.amt), billT = sum(bills, r => r.amt);
   const youPay = billT - shareT, left = incomeT - youPay;
   const al = data.allocs.filter(a => a.cutoff === c);
@@ -568,7 +579,12 @@ function cutCard(ym, c, C){
       ${C.salary.length ? C.salary.map(r => `<div class="line"><div class="nm">${esc(r.x.name)}${r.x.recur==='once'?'<span class="tag">one-time</span>':''}</div><div class="amt editable" data-edit="incomes|${r.x.id}" title="Tap to change amount">${money(r.amt)}</div>${rowActs('incomes', r.x.id)}</div>`).join('') : '<div class="empty">No income for this cutoff</div>'}
     </div>
     <div class="sec"><div class="sec-t">Bills to pay <a data-act="add" data-store="bills" data-cut="${c}" data-ym="${ym}">${ic('plus')} Add</a></div>
-      ${C.bills.length ? `<div class="bar" title="${pctPaid}% paid"><span style="width:${pctPaid}%"></span></div>` + C.bills.map(billLine).join('') : '<div class="empty">No bills this cutoff</div>'}
+      ${C.bills.length ? `<div class="bar" title="${pctPaid}% paid"><span style="width:${pctPaid}%"></span></div>` + C.bills.map((r, i) => {
+        const g = groupOf(r), prev = i ? groupOf(C.bills[i-1]) : null;
+        if (g === prev) return billLine(r);
+        const grp = C.bills.filter(x => groupOf(x) === g);
+        return `<div class="grp"><span>${g}</span><span>${grp.length} · ${money(sum(grp, x => x.amt))}</span></div>` + billLine(r);
+      }).join('') : '<div class="empty">No bills this cutoff</div>'}
     </div>
     <div class="sec">
       <div class="tot"><span class="k">Total bills</span><span>${money(C.billT)}</span></div>
