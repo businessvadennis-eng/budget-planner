@@ -4,13 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MoneyFest · Manifesting Debt-Free</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%229%22 fill=%22%232f6b3f%22/%3E%3Cpath d=%22M7.5 22l5.5-5.5 4 3L23 13%22 stroke=%22white%22 stroke-width=%222.6%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M24.5 4.8l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z%22 fill=%22white%22/%3E%3C/svg%3E">
+<link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#2f6b3f">
+<meta name="description" content="MoneyFest: track income, expenses and what's left every payday. Manifesting debt-free.">
+<meta property="og:title" content="MoneyFest · Manifesting Debt-Free">
+<meta property="og:description" content="A free budget tracker for your paydays, bills and installments. Your numbers stay on your device.">
+
 <style>
 :root{
   --bg:#f4f6f3; --surface:#ffffff; --surface-2:#eef1ec; --border:#dfe4dc;
   --text:#1d2a20; --muted:#667066; --accent:#2f6b3f; --accent-soft:#e3efe5; --accent-text:#ffffff;
   --blue:#2c5d8a; --blue-soft:#e4edf6;
   --good:#1f8a5b; --bad:#c0392b; --bad-soft:#fbe7e5; --warn:#b7791f; --warn-soft:#fdf3e1;
+  --gold:#b7791f; --gold-soft:#fdf3e1; --gold-text:#b7791f;
   --shadow:0 1px 2px rgba(20,40,25,.06),0 2px 8px rgba(20,40,25,.04);
 }
 @media (prefers-color-scheme: dark){
@@ -18,14 +24,14 @@
     --bg:#121612; --surface:#1a201b; --surface-2:#222a23; --border:#2e382f;
     --text:#e5ebe5; --muted:#99a59a; --accent:#6fbf86; --accent-soft:#1f3326; --accent-text:#0f1a12;
     --blue:#79a9d6; --blue-soft:#1d2b3a; --good:#4cc08b; --bad:#ec7a6d; --bad-soft:#3b1f1c; --warn:#e0a64b; --warn-soft:#3a2f1c;
-    --shadow:none;
+    --gold:#e0a64b; --gold-soft:#3a2f1c; --gold-text:#e0a64b; --shadow:none;
   }
 }
 :root[data-theme="dark"]{
   --bg:#121612; --surface:#1a201b; --surface-2:#222a23; --border:#2e382f;
   --text:#e5ebe5; --muted:#99a59a; --accent:#6fbf86; --accent-soft:#1f3326; --accent-text:#0f1a12;
   --blue:#79a9d6; --blue-soft:#1d2b3a; --good:#4cc08b; --bad:#ec7a6d; --bad-soft:#3b1f1c; --warn:#e0a64b; --warn-soft:#3a2f1c;
-  --shadow:none;
+  --gold:#e0a64b; --gold-soft:#3a2f1c; --gold-text:#e0a64b; --shadow:none;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -114,7 +120,6 @@ main{max-width:1180px;padding:22px 28px 70px}
 .t-item .amt{font-weight:700;font-variant-numeric:tabular-nums;min-width:80px;text-align:right}
 .spin{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media (max-width:860px){.tally{order:8;width:100%;margin-top:4px;flex-direction:row;flex-wrap:wrap;align-items:center}.tally .tally-total{font-size:20px}.tally-btns{flex:1 1 220px}}
 .fx-out.flash{animation:flash .6s}
 @keyframes flash{0%{opacity:.3}100%{opacity:1}}
 @media (prefers-reduced-motion: reduce){.fx-live .dot{animation:none}.fx-out.flash{animation:none}}
@@ -161,6 +166,11 @@ main{max-width:1180px;padding:22px 28px 70px}
 .ic-wallet{--src:url(icons/wallet.svg)}
 .ic-trending-down{--src:url(icons/trending-down.svg)}
 .ic-arrow-right{--src:url(icons/arrow-right.svg)}
+.ic-menu{--src:url(icons/menu.svg)}
+.ic-share-2{--src:url(icons/share-2.svg)}
+.ic-copy{--src:url(icons/copy.svg)}
+.ic-shield-check{--src:url(icons/shield-check.svg)}
+.ic-sparkles{--src:url(icons/sparkles.svg)}
 .ic-camera{--src:url(icons/camera.svg)}
 .ic-shopping-cart{--src:url(icons/shopping-cart.svg)}
 .ic-minus{--src:url(icons/minus.svg)}
@@ -293,7 +303,7 @@ main{max-width:1180px;padding:22px 28px 70px}
 .tag.inst{background:var(--blue-soft);color:var(--blue)}
 .tag.last{background:var(--warn-soft);color:var(--warn)}
 .tag.share{background:var(--accent-soft);color:var(--accent)}
-.bar{height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin:6px 0 2px}
+.bar{height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin:6px 0 2px;pointer-events:none}
 .bar span{display:block;height:100%;background:var(--accent)}
 .empty{text-align:center;color:var(--muted);padding:6px 0}
 .tbl-wrap{overflow-x:auto}
@@ -314,7 +324,38 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px}
 .note{font-size:13px;color:var(--muted);margin:8px 0 0}
 .warn{background:var(--warn-soft);color:var(--warn);padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:13px}
-.welcome{padding:28px;text-align:center}
+.hello{display:flex;align-items:center;gap:14px;padding:16px 20px;margin-bottom:18px;background:linear-gradient(120deg,var(--accent-soft),var(--surface) 70%)}
+.hello-wave{font-size:30px;line-height:1}
+.hello-text{flex:1;min-width:0}
+.hello h2{margin:0;font-size:22px;font-weight:800}
+.hello p{margin:2px 0 0;color:var(--muted);font-size:15px}
+.hello p b{color:var(--accent);letter-spacing:.02em}
+.hello-ask{display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%}
+.hello-ask input{flex:1 1 160px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg)}
+.w-name{display:flex;flex-direction:column;gap:6px;font-weight:700;margin-bottom:18px;max-width:340px}
+.w-name input{padding:10px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);font-weight:500}
+.welcome{padding:0;text-align:left;max-width:760px;margin:0 auto;overflow:hidden}
+.w-hello{padding:24px 26px 18px;background:var(--accent-soft)}
+.w-title{font-size:24px;font-weight:600}
+.w-title b{font-weight:800} .w-title span{color:var(--accent)}
+.w-privacy{display:flex;align-items:flex-start;gap:8px;margin-top:8px;font-size:13px;color:var(--accent);font-weight:600}
+.w-privacy .ic{margin-top:2px}
+.w-steps{display:flex;gap:6px;padding:14px 26px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.ws{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);font-weight:600;padding:4px 10px 4px 4px;border-radius:999px}
+.ws b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);font-size:12px}
+.ws.on{color:var(--accent);background:var(--accent-soft)} .ws.on b{background:var(--accent);color:var(--accent-text)}
+.ws.done b{background:var(--accent-soft);color:var(--accent)}
+.w-body{padding:20px 26px 24px}
+.w-body h2{margin:0 0 4px} .w-body > p{margin:0 0 14px;color:var(--muted)}
+.w-form{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.w-form input,.w-form select{padding:10px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg)}
+.w-form #w-name{flex:1 1 180px}
+.w-form .amt{width:130px;text-align:right;font-weight:700}
+.w-mos{display:inline-flex;align-items:center;gap:6px;color:var(--muted)} .w-mos input{width:70px}
+.w-list{border-top:1px solid var(--border);margin-bottom:6px}
+.w-list .line{border-top:0;border-bottom:1px dashed var(--border)}
+.w-nav{display:flex;justify-content:space-between;gap:8px;margin-top:18px;flex-wrap:wrap}
+.btn[disabled]{opacity:.5;pointer-events:none}
 .welcome h2{margin:0 0 6px}
 .welcome p{color:var(--muted);margin:0 0 16px}
 /* modal */
@@ -332,20 +373,51 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
 .mact{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.show{opacity:1}
+/* ---------- mobile app layout ---------- */
+.mbar,.bnav,.drawer-bg{display:none}
 @media (max-width:860px){
-  .shell{flex-direction:column}
-  .side{width:auto;height:auto;flex-direction:row;align-items:center;padding:8px 12px;border-right:0;border-bottom:1px solid var(--border);overflow-x:auto;gap:6px}
-  .logo{display:none}
-  .tabs{flex-direction:row}
-  .tab{width:auto;padding:8px 10px}
-  .side-foot{margin:0 0 0 auto;flex-direction:row;border:0;padding:0}
-  .topbar{position:static;padding:10px 16px}
-  .side{flex-wrap:wrap}
-  .fx{order:9;width:100%;margin-top:4px;flex-direction:row;flex-wrap:wrap;align-items:center}
-  .fx input{width:90px}
-  .fx .fx-row{flex:1 1 auto}
-  .fx-meta{display:none}
+  .shell{flex-direction:column;position:relative;z-index:0}
+  .shell .bar,.shell .sub{pointer-events:none}
+  .mbar{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top))}
+  .mbar .logo-mark{width:32px;height:32px}
+  .mbar .wordmark{font-size:19px}
+  .mbar .sp{flex:1}
+  .mbar .icon-btn{padding:8px;border:1px solid var(--border);border-radius:10px}
+  .mbar .icon-btn .ic{width:20px;height:20px}
+  /* sidebar becomes a slide-out drawer */
+  .side{position:fixed;top:0;left:0;bottom:0;width:min(86vw,320px);height:100%;z-index:40;transform:translateX(-105%);transition:transform .25s ease;box-shadow:0 0 40px rgba(0,0,0,.25);padding-top:calc(18px + env(safe-area-inset-top));padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+  body.drawer-open .side{transform:none}
+  .drawer-bg{display:block;position:fixed;inset:0;background:rgba(10,20,14,.45);z-index:39;opacity:0;pointer-events:none;transition:opacity .25s}
+  body.drawer-open .drawer-bg{opacity:1;pointer-events:auto}
+  .topbar{position:static;padding:12px 16px}
+  main{padding:14px 14px calc(96px + env(safe-area-inset-bottom))}
+  /* bottom tab bar */
+  .bnav{display:grid;grid-template-columns:repeat(5,1fr);align-items:end;position:fixed;left:0;right:0;bottom:0;z-index:100;isolation:isolate;background:var(--surface);border-top:1px solid var(--border);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+  .bnav button{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted);font-size:11px;font-weight:600;padding:6px 0;cursor:pointer;border-radius:10px}
+  .bnav button .ic{width:22px;height:22px}
+  .bnav button.on{color:var(--accent)}
+  .bnav .fab{position:relative;top:-14px}
+  .bnav .fab span.circle{width:56px;height:56px;border-radius:50%;background:var(--accent);color:var(--accent-text);display:grid;place-items:center;box-shadow:0 6px 18px rgba(47,107,63,.35);border:4px solid var(--surface)}
+  .bnav .fab span.circle .ic{width:24px;height:24px}
+  .bnav .fab .tally-mini{color:var(--text);font-variant-numeric:tabular-nums}
+  .head h1{font-size:20px}
+  .cut-grid,.cut-grid.many{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr 1fr;gap:10px}
+  .kpi{padding:12px}
+  .kpi .num{font-size:19px}
+  .summary .big{font-size:24px}
+  .chart{height:190px}
+  .chart .bars{height:120px}
+  .backbar{display:none}
+  .toast{bottom:calc(92px + env(safe-area-inset-bottom))}
+  .modal{border-radius:16px 16px 0 0;max-width:none;position:fixed;bottom:0;left:0;right:0;max-height:92vh;overflow-y:auto;padding-bottom:calc(22px + env(safe-area-inset-bottom))}
+  .backdrop{padding:0;align-items:flex-end}
+  .months{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .months::-webkit-scrollbar{display:none}
+  .fgrid{grid-template-columns:1fr}
+  input,select,textarea{font-size:16px}  /* stops iPhone zooming into fields */
 }
+@media (max-width:420px){.kpis{grid-template-columns:1fr}.mbar .wordmark small{display:none}}
 @media (max-width:760px){
   main{padding:16px 16px 70px}
   .cut-grid,.two{grid-template-columns:1fr}
@@ -381,11 +453,18 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
     <div class="fx-meta" id="fx-meta"></div>
   </div>
   <div class="side-foot">
-    <button class="btn sm primary" data-act="import" title="Load your starter or backup .json file"><i class="ic ic-folder-open" aria-hidden="true"></i> Import file</button>
+    <button class="btn sm primary" data-act="import" title="Restore from a MoneyFest backup file"><i class="ic ic-folder-open" aria-hidden="true"></i> Restore backup</button>
     <button class="btn sm" data-act="export" title="Download a backup .json file"><i class="ic ic-save" aria-hidden="true"></i> Backup</button>
+    <button class="btn sm" data-act="share" title="Share MoneyFest with friends"><i class="ic ic-share-2" aria-hidden="true"></i> Share with friends</button>
   </div>
 </aside>
+<div class="drawer-bg" data-act="drawer"></div>
 <div class="content">
+  <header class="mbar">
+    <span class="logo" data-act="dashhome" style="padding:0"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="currentColor"/><path d="M7.5 22l5.5-5.5 4 3L23 13" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M24.5 4.8l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z" fill="#fff"/></svg><span class="wordmark">Money<span>Fest</span></span></span>
+    <span class="sp"></span>
+    <button class="icon-btn" data-act="drawer" aria-label="Open menu"><i class="ic ic-menu" aria-hidden="true"></i></button>
+  </header>
   <div class="topbar">
     <div id="countdown" class="countdown"></div>
 
@@ -393,6 +472,7 @@ td .sub{color:var(--muted);font-size:12px;white-space:normal}
   <main id="main"></main>
 </div>
 </div>
+<nav class="bnav" id="bnav" aria-label="Main"></nav>
 <div id="modal-root"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="import-file" accept=".json,application/json" hidden>
@@ -427,6 +507,8 @@ function load(){
   data.paid ||= {}; data.settings ||= {currency:'₱'}; CUR = data.settings.currency || '₱';
   if (!data.settings.trackFrom && (data.bills.length || data.incomes.length)){ data.settings.trackFrom = ymNow(); persist(); }
   fixStarterSchedule();
+  // people who were already using the planner before the setup screen existed skip it
+  if (data.settings.setupDone === undefined && !data.settings.setupInProgress && data.incomes.length && data.bills.length){ data.settings.setupDone = true; persist(); }
 }
 /* One-time fix: the first starter file started every installment one month too early.
    Only shifts starter installments that still have their original start month; never touches paid ticks. */
@@ -484,8 +566,8 @@ const SCHEMA = {
     {k:'notes', l:'Notes', t:'text', full:1},
   ]},
   incomes: { label:'Income', fields:[
-    {k:'name', l:'Income name', t:'text', req:1, full:1, ph:'e.g. CIO (ETC)'},
-    {k:'kind', l:'Kind', t:'select', opts:[['salary','My income / salary'],['share','Share from someone else (e.g. Josh)']], def:'salary', full:1, hint:'A share is subtracted from the bills you pay for that cutoff.'},
+    {k:'name', l:'Income name', t:'text', req:1, full:1, ph:'e.g. Salary, Freelance client'},
+    {k:'kind', l:'Kind', t:'select', opts:[['salary','My income / salary'],['share','Share from someone else (partner, roommate)']], def:'salary', full:1, hint:'A share is subtracted from the bills you pay for that cutoff.'},
     {k:'recur', l:'How often', t:'select', opts:[['monthly','Every month'],['weekly','Every week'],['once','One-time (one month only)']], def:'monthly'},
     {k:'amount', l:'Amount (each time)', t:'number', req:1},
     {k:'cutoff', l:'Cutoff', t:'select', opts:[['15th','15th cutoff'],['30th','30th cutoff']], def:'15th', keep:1, show:{_sched:['semi'], recur:['monthly','once']}},
@@ -612,6 +694,11 @@ const ui = {view:'dash', ym:ymNow(), year:Number(ymNow().slice(0,4)), billFilter
 const VIEWS = [['dash','Dashboard','layout-dashboard'],['month','Monthly','calendar-days'],['bills','Expenses','receipt'],['paid','Paid','badge-check'],['income','Income & Savings','wallet']];
 function renderTabs(){
   const overdue = installments().reduce((n, b) => n + instStatus(b).overdue.length, 0);
+  const bn = $('#bnav');
+  if (bn){ const b = (k, l, i) => `<button class="${ui.view===k?'on':''}" data-act="view" data-v="${k}">${ic(i)}${l}</button>`;
+    bn.innerHTML = b('dash','Home','layout-dashboard') + b('month','Month','calendar-days')
+      + `<button class="fab" data-t="open" aria-label="Shopping tally"><span class="circle">${ic('camera')}</span><span class="tally-mini" id="tally-mini">${tally.items.length ? money(tallyTotal()) : 'Tally'}</span></button>`
+      + b('paid','Paid','badge-check') + `<button data-act="drawer">${ic('menu')}More</button>`; }
   $('#tabs').innerHTML = VIEWS.map(([k,l,i]) => `<button class="tab ${ui.view===k?'on':''}" data-act="view" data-v="${k}">${ic(i)} ${l}${k==='paid'&&overdue?`<span class="ct" title="Overdue installment payments">${overdue}</span>`:''}</button>`).join('');
 }
 /* ---------- navigation history ---------- */
@@ -640,19 +727,67 @@ function backBar(){
 function render(){
   renderTabs();
   let h = storageOK ? '' : `<div class="warn">Your browser is blocking storage here, so changes won't be kept after you close the page. Open it from your website in Chrome to save normally.</div>`;
-  if (!data.incomes.length && !data.bills.length) h += welcome();
+  if (needsSetup()) h += welcome();
   else h += backBar() + ({dash:viewDash, month:viewMonth, bills:viewBills, paid:viewPaid, income:viewIncome})[ui.view]();
   $('#main').innerHTML = h;
   renderCountdown();
   afterRender();
 }
+/* ---------- first-time setup (what friends see when they open the link) ---------- */
+const setup = {step:1, kind:'monthly', cut:'15th', months:6};
+const needsSetup = () => !data.settings.setupDone;
 function welcome(){
-  return `<div class="card welcome"><h2>Let's set up your budget</h2>
-    <p>Import your starter file to load your current income, bills and installments, or start from scratch.</p>
-    <button class="btn primary" data-act="import">Import starter / backup file</button>
-    <button class="btn" data-act="add" data-store="incomes">${ic('plus')} Add income</button>
-    <button class="btn" data-act="add" data-store="bills">${ic('plus')} Add expense</button></div>`;
+  const sch = SCHED(), st = setup.step, wd = payWeekday();
+  const steps = ['How you get paid', 'Your income', 'Your bills'].map((t, i) => `<span class="ws ${i+1===st?'on':i+1<st?'done':''}"><b>${i+1}</b>${t}</span>`).join('');
+  const opt = (v, t, d) => `<button class="sched-opt ${sch===v?'on':''}" data-act="sched" data-v="${v}"><b>${t}</b><span>${d}</span></button>`;
+  const cutSel = () => sch === 'semi' ? `<select id="w-cut"><option value="15th" ${setup.cut==='15th'?'selected':''}>15th cutoff</option><option value="30th" ${setup.cut==='30th'?'selected':''}>30th cutoff</option></select>` : '';
+  let body = '';
+  if (st === 1) body = `<label class="w-name">What should we call you? <input id="w-you" value="${esc(data.settings.name || '')}" placeholder="Your name" maxlength="30"></label>
+      <h2>How do you get paid?</h2><p>MoneyFest splits each month around your paydays.</p>
+      <div class="sched">${opt('semi','Twice a month','15th & 30th cutoffs')}${opt('weekly','Every week','One card per payday')}${opt('monthly','Once a month','One payday a month')}</div>
+      ${sch==='weekly' ? `<label class="sched-day">Payday is every <select id="payday">${WD.map((d,i) => `<option value="${i}" ${i===wd?'selected':''}>${d}</option>`).join('')}</select></label>` : ''}
+      <div class="w-nav"><button class="btn" data-act="import">${ic('folder-open')} I have a backup file</button><button class="btn primary" data-act="wnext">Next ${ic('chevron-right')}</button></div>`;
+  if (st === 2) body = `<h2>What money comes in?</h2><p>Add each paycheck or income. You can add more later.</p>
+      <div class="w-form"><input id="w-name" placeholder="e.g. Salary, Freelance"><input id="w-amt" class="amt" inputmode="decimal" placeholder="Amount">
+        ${sch==='weekly' ? `<select id="w-freq"><option value="weekly">every week</option><option value="monthly">once a month</option></select>` : cutSel()}
+        <button class="btn primary" data-act="wadd-inc">${ic('plus')} Add</button></div>
+      <div class="w-list">${data.incomes.map(x => `<div class="line"><div class="nm">${esc(x.name)}<small>${x.recur==='weekly'?'every week':sch==='semi'?x.cutoff+' cutoff':'monthly'}</small></div><div class="amt">${money(num(x.amount))}</div><button class="icon-btn del" data-act="del" data-store="incomes" data-id="${x.id}">${ic('trash')}</button></div>`).join('') || '<div class="empty">No income added yet</div>'}</div>
+      <div class="w-nav"><button class="btn" data-act="wback">${ic('chevron-left')} Back</button><button class="btn primary" data-act="wnext" ${data.incomes.length?'':'disabled'}>Next ${ic('chevron-right')}</button></div>`;
+  if (st === 3) body = `<h2>What do you need to pay?</h2><p>Rent, phone, loans, installments… add the big ones now. You can always add more.</p>
+      <div class="w-form"><input id="w-name" placeholder="e.g. Rent, Phone plan"><input id="w-amt" class="amt" inputmode="decimal" placeholder="Amount">
+        <select id="w-kind"><option value="monthly" ${setup.kind==='monthly'?'selected':''}>every month</option><option value="weekly" ${setup.kind==='weekly'?'selected':''}>every week</option><option value="installment" ${setup.kind==='installment'?'selected':''}>installment</option><option value="once" ${setup.kind==='once'?'selected':''}>one-time (this month)</option></select>
+        ${setup.kind==='installment' ? `<label class="w-mos">for <input id="w-mos" type="number" min="2" value="${setup.months}"> months</label>` : ''}
+        ${setup.kind==='weekly' ? '' : sch==='semi' ? cutSel() : sch==='weekly' ? '<input id="w-due" class="amt" placeholder="Due day, e.g. 20th">' : ''}
+        <button class="btn primary" data-act="wadd-bill">${ic('plus')} Add</button></div>
+      <div class="w-list">${data.bills.map(b => `<div class="line"><div class="nm">${esc(b.name)}<small>${b.kind==='installment'?b.months+'-month installment':b.kind==='weekly'?'every week':b.kind==='once'?'one-time':'every month'}</small></div><div class="amt">${money(num(b.amount))}</div><button class="icon-btn del" data-act="del" data-store="bills" data-id="${b.id}">${ic('trash')}</button></div>`).join('') || '<div class="empty">No bills added yet</div>'}</div>
+      <div class="w-nav"><button class="btn" data-act="wback">${ic('chevron-left')} Back</button><button class="btn primary" data-act="wdone">${ic('circle-check')} Finish</button></div>`;
+  return `<div class="card welcome"><div class="w-hello"><div class="w-title">Welcome to <b>Money<span>Fest</span></b></div>
+      <div class="w-privacy">${ic('shield-check')} Your numbers stay on this device only. Nobody else can see them, even if they open the same link.</div></div>
+    <div class="w-steps">${steps}</div><div class="w-body">${body}</div></div>`;
 }
+function wizardAdd(store){
+  const name = $('#w-name').value.trim(), amount = num($('#w-amt').value), sch = SCHED(), ym = ymNow();
+  if (!name){ toast('Give it a name'); $('#w-name').focus(); return; }
+  if (!amount){ toast('Enter an amount'); $('#w-amt').focus(); return; }
+  const cut = $('#w-cut') ? $('#w-cut').value : '15th'; setup.cut = cut;
+  if (store === 'incomes'){
+    const weekly = sch === 'weekly' && $('#w-freq') && $('#w-freq').value === 'weekly';
+    data.incomes.push({id:uid(), name, kind:'salary', cutoff:cut, amount, recur:weekly?'weekly':'monthly', weekday:String(payWeekday()), start:'', end:'', month:'', due:'', notes:''});
+  } else {
+    const kind = $('#w-kind').value, months = num($('#w-mos')?.value) || setup.months;
+    data.bills.push({id:uid(), name, kind, cutoff:cut, due:$('#w-due')?.value.trim() || '', weekday:String(payWeekday()), amount, price:kind==='installment'?amount*months:'', start:kind==='once'?'':ym, months:kind==='installment'?months:'', final:'', end:'', month:kind==='once'?ym:'', account:'', notes:''});
+  }
+  if (!data.settings.trackFrom) data.settings.trackFrom = ym;
+  data.settings.setupInProgress = true;
+  persist(); render(); const n = $('#w-name'); if (n) n.focus(); toast(`Added ${name}`);
+}
+async function shareApp(){
+  const url = location.origin + location.pathname, text = 'MoneyFest: a free tracker for your paydays, bills and installments. Your numbers stay on your own phone.';
+  try { if (navigator.share){ await navigator.share({title:'MoneyFest', text, url}); return; } } catch(e){ if (e && e.name === 'AbortError') return; }
+  try { await navigator.clipboard.writeText(url); toast('Link copied. Friends start with their own empty tracker.', 'copy'); }
+  catch(e){ showModal(`<h2>Share MoneyFest</h2><p>Copy this link and send it to your friends. They'll start with their own empty tracker and won't see your numbers.</p><input style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px" value="${esc(url)}" onclick="this.select()"><div class="mact"><button class="btn" data-act="close">Done</button></div>`); }
+}
+
 const footer = () => `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:26px;align-items:center;color:var(--muted);font-size:12px">
   <span>Saved in this browser.</span>
   <button class="btn sm" data-act="export">Export backup</button><button class="btn sm" data-act="import">Import backup</button>
@@ -758,6 +893,16 @@ function renderCountdown(){
     </div>`;
 }
 
+/* ---------- greeting ---------- */
+function greeting(){
+  const name = (data.settings.name || '').trim();
+  if (!name || ui.editName) return `<div class="hello card"><div class="hello-ask"><span class="hello-wave">👋</span><b>Hello! What should I call you?</b>
+    <input id="hello-name" value="${esc(name)}" placeholder="Your name" maxlength="30"><button class="btn primary" data-act="save-name">Save</button></div></div>`;
+  return `<div class="hello card"><span class="hello-wave">👋</span><div class="hello-text"><h2>Hello, ${esc(name)}!</h2><p>Maimpas rana, dili maguol. <b>NEVEEER!</b></p></div>
+    <button class="icon-btn" data-act="edit-name" title="Change name">${ic('pencil')}</button></div>`;
+}
+function saveName(){ const v = ($('#hello-name')?.value || '').trim(); if (!v){ toast('Type your name first'); return; } data.settings.name = v; ui.editName = false; persist(); render(); }
+
 /* ---------- Dashboard (year summary) ---------- */
 function yearsRange(){
   let min = Number(ymNow().slice(0,4)), max = min;
@@ -792,7 +937,7 @@ function viewDash(){
   const maxBar = Math.max(1, ...rows.map(r => Math.max(r.M.income, r.M.youPay)));
   const pctPaid = (paidAmt + unpaidAmt) ? Math.round(paidAmt / (paidAmt + unpaidAmt) * 100) : 0;
   const years = []; for (let i = ymin; i <= ymax; i++) years.push(i);
-  return `<div class="head"><h1>${y} dashboard</h1>
+  return `${greeting()}<div class="head"><h1>${y} dashboard</h1>
       <button class="btn" data-act="year" data-v="${y-1}" title="Previous year">${ic('chevron-left')}</button>
       <select id="ysel" class="ysel" aria-label="Select year">${years.map(v => `<option ${v===y?'selected':''}>${v}</option>`).join('')}${years.includes(y)?'':`<option selected>${y}</option>`}</select>
       <button class="btn" data-act="year" data-v="${y+1}" title="Next year">${ic('chevron-right')}</button>
@@ -1098,6 +1243,7 @@ function renderTallySide(){
   const t = tallyTotal(), n = tallyCount(), lim = num(tally.limit);
   $('#tally-total').textContent = money(t);
   $('#tally-count').textContent = `${n} item${n === 1 ? '' : 's'}`;
+  const mini = $('#tally-mini'); if (mini) mini.textContent = n ? money(t) : 'Tally';
   const bar = $('#tally-bar'), lt = $('#tally-limit');
   if (lim > 0){
     bar.hidden = false; bar.classList.toggle('over', t > lim); bar.firstElementChild.style.width = Math.min(100, t / lim * 100) + '%';
@@ -1285,7 +1431,7 @@ async function importFile(file){
     <div class="mact"><button class="btn" data-act="close">Cancel</button><button class="btn primary" id="do-imp">Replace &amp; import</button></div>`);
   $('#do-imp').onclick = () => {
     data = Object.assign({incomes:[], bills:[], allocs:[], paid:{}, settings:{currency:'₱'}}, j.data);
-    data.settings ||= {}; if (!data.settings.trackFrom) data.settings.trackFrom = ymNow(); fixStarterSchedule(); CUR = data.settings.currency || '₱'; persist(); closeModal(); render(); toast('Imported');
+    data.settings ||= {}; data.settings.setupDone = true; if (!data.settings.trackFrom) data.settings.trackFrom = ymNow(); fixStarterSchedule(); CUR = data.settings.currency || '₱'; persist(); closeModal(); render(); toast('Imported');
   };
 }
 
@@ -1300,8 +1446,18 @@ document.addEventListener('click', e => {
   if (ed && !ed.querySelector('input')){ startInlineEdit(ed); return; }
   const b = e.target.closest('[data-act]'); if (!b) return;
   const {act, store, id, v} = b.dataset;
+  if (act === 'drawer'){ document.body.classList.toggle('drawer-open'); return; }
+  document.body.classList.remove('drawer-open');
   if (act === 'view') go({view:v});
-  else if (act === 'sched'){ data.settings.paySchedule = v; qa.cutoff = null; persist(); render(); toast(`Pay schedule: ${({semi:'twice a month', weekly:'every week', monthly:'once a month'})[v]}`); }
+  else if (act === 'sched'){ const y = $('#w-you'); if (y && y.value.trim()) data.settings.name = y.value.trim(); data.settings.paySchedule = v; qa.cutoff = null; persist(); render(); toast(`Pay schedule: ${({semi:'twice a month', weekly:'every week', monthly:'once a month'})[v]}`); }
+  else if (act === 'wnext'){ const y = $('#w-you'); if (y && y.value.trim()){ data.settings.name = y.value.trim(); persist(); } setup.step = Math.min(3, setup.step + 1); render(); }
+  else if (act === 'wback'){ setup.step = Math.max(1, setup.step - 1); render(); }
+  else if (act === 'wadd-inc') wizardAdd('incomes');
+  else if (act === 'wadd-bill') wizardAdd('bills');
+  else if (act === 'wdone'){ data.settings.setupDone = true; if (!data.settings.trackFrom) data.settings.trackFrom = ymNow(); persist(); go({view:'dash', year:Number(ymNow().slice(0,4))}); celebrate(); toast("You're all set. Let's manifest debt-free!", 'party-popper'); }
+  else if (act === 'share') shareApp();
+  else if (act === 'save-name') saveName();
+  else if (act === 'edit-name'){ ui.editName = true; render(); const i = $('#hello-name'); if (i){ i.focus(); i.select(); } }
   else if (act === 'dashhome') go({view:'dash', year:Number(ymNow().slice(0,4))});
   else if (act === 'ym') go({ym:v});
   else if (act === 'year') go({year:Number(v)});
@@ -1342,13 +1498,16 @@ document.addEventListener('change', e => {
     }
   }
   else if (el.id === 'payday'){ data.settings.payWeekday = Number(el.value); qa.cutoff = null; persist(); render(); }
+  else if (el.id === 'w-kind'){ setup.kind = el.value; const n = $('#w-name').value, a = $('#w-amt').value; render(); $('#w-name').value = n; $('#w-amt').value = a; }
+  else if (el.id === 'w-mos') setup.months = num(el.value) || 6;
   else if (el.id === 'ysel') go({year:Number(el.value)});
   else if (el.id === 'bf'){ ui.billFilter = el.value; render(); }
   else if (el.id === 'bc'){ ui.billCut = el.value; render(); }
   else if (el.id === 'cur'){ CUR = data.settings.currency = el.value; persist(); render(); }
   else if (el.id === 'import-file' && el.files[0]){ importFile(el.files[0]); el.value = ''; }
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); if (e.key === 'Enter' && e.target.id === 'hello-name'){ e.preventDefault(); saveName(); return; }
+  if (e.key === 'Enter' && e.target.closest && e.target.closest('.w-form')){ e.preventDefault(); wizardAdd(SCHED() && $('[data-act=wadd-inc]') ? 'incomes' : 'bills'); } });
 
 fxInit(); renderTallySide(); load(); readRoute(); try { history.replaceState(null, '', '#' + routeOf()); } catch(e){} render();
 </script>
